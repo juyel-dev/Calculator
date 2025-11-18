@@ -1,7 +1,6 @@
-// build.gradle.kts (root)
 plugins {
-    kotlin("multiplatform") version "2.0.21"
-    id("org.jetbrains.compose") version "1.6.11"  // Latest stable for web
+    kotlin("multiplatform") version "2.2.21"
+    id("org.jetbrains.compose") version "1.9.3"
 }
 
 repositories {
@@ -23,9 +22,11 @@ kotlin {
     sourceSets {
         val jsMain by getting {
             dependencies {
-                implementation(compose.html.core)
-                implementation(compose.html.ext)
+                implementation(compose.web.core)
+                implementation(compose.web.dom)
                 implementation(compose.runtime)
+                implementation(compose.foundation)
+                implementation(compose.material3)
             }
         }
     }
