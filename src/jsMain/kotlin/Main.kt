@@ -1,10 +1,19 @@
 import androidx.compose.runtime.*
-import org.jetbrains.compose.web.dom.*
-import org.jetbrains.compose.web.attributes.*
-import org.jetbrains.compose.web.css.*
+import org.jetbrains.compose.html.*
+import org.jetbrains.compose.html.impl.ComposeHtmlInternal
+import org.jetbrains.compose.html.style.*
+import kotlinx.browser.document
+import kotlinx.dom.clearChildren
+import web.cssom.*
+
+fun main() {
+    ComposeHtmlInternal.renderComposable(rootElementId = "root") {
+        CalculatorApp()
+    }
+}
 
 @Composable
-fun Calculator() {
+fun CalculatorApp() {
     var display by remember { mutableStateOf("0") }
     var previousValue by remember { mutableStateOf("") }
     var operation by remember { mutableStateOf("") }
@@ -47,7 +56,7 @@ fun Calculator() {
                 "÷" -> if (currentValue != 0.0) prev / currentValue else { display = "Error"; return }
                 else -> currentValue
             }
-            display = if (result == result.toInt().toDouble()) result.toInt().toString() else result.toString()
+            display = if (result == result.toInt().toDouble()) result.toInt().toString() else "%.2f".format(result)
         }
 
         previousValue = display
@@ -60,38 +69,89 @@ fun Calculator() {
         operation = ""
     }
 
-    Div({
-        style {
-            width(320.px)
-            margin(50.px)
-            fontFamily("Arial, sans-serif")
-            backgroundColor(Color("#222"))
-            borderRadius(16.px)
-            padding(20.px)
-            boxShadow("0 10px 30px rgba(0,0,0,0.5)")
-            userSelect("none")
-        }
-    }) {
-        // Display
-        Div({
-            style {
-                backgroundColor(Color("#000"))
-                color(Color.white)
-                fontSize(48.px)
-                textAlign("right")
-                padding(20.px)
-                borderRadius(8.px)
-                marginBottom(20.px)
-                minHeight(60.px)
-                display("flex")
-                alignItems("center")
-                justifyContent("flex-end")
+    style {
+        css {
+            "body" {
+                margin = "0"
+                padding = "0"
+                backgroundColor = Color("#111")
+                display = Display.flex
+                justifyContent = JustifyContent.center
+                alignItems = AlignItems.center
+                height = 100.vh
+                fontFamily = "Arial, sans-serif"
             }
-        }) {
-            Text(display)
+            "#root" {
+                width = 320.px
+                backgroundColor = Color("#222")
+                borderRadius = 16.px
+                padding = 20.px
+                boxShadow = "0 10px 30px rgba(0,0,0,0.5)"
+                userSelect = "none"
+            }
+            ".display" {
+                backgroundColor = Color("#000")
+                color = Color.white
+                fontSize = 48.px
+                textAlign = TextAlign.right
+                padding = 20.px
+                borderRadius = 8.px
+                marginBottom = 20.px
+                minHeight = 60.px
+                display = Display.flex
+                alignItems = AlignItems.center
+                justifyContent = JustifyContent.flexEnd
+            }
+            ".button-row" {
+                display = Display.grid
+                gridTemplateColumns = "repeat(4, 1fr)"
+                gap = 12.px
+                marginBottom = 12.px
+            }
+            ".button" {
+                backgroundColor = Color("#333")
+                color = Color.white
+                fontSize = 32.px
+                borderRadius = 50.px
+                border = Border.none
+                padding = 20.px
+                cursor = Cursor.pointer
+                transition = "all 0.2s"
+                onPointerOver { style { backgroundColor = Color("#555") } }
+                onPointerOut { style { backgroundColor = Color("#333") } }
+            }
+            ".button:hover" {
+                backgroundColor = Color("#555")
+            }
+            ".operator" {
+                backgroundColor = Color("#ff9500")
+            }
+            ".operator:hover" {
+                backgroundColor = Color("#e68900")
+            }
+            ".clear" {
+                backgroundColor = Color("#a6a6a6")
+            }
+            ".clear:hover" {
+                backgroundColor = Color("#8e8e8e")
+            }
+            ".zero" {
+                gridColumn = "1 / span 2"
+            }
+            ".equals" {
+                backgroundColor = Color("#ff9500")
+            }
+        }
+    }
+
+    div(id = "root") {
+        div {
+            attrs {
+                classes += "display"
+            }
+            +display
         }
 
-        // Buttons
         val buttons = listOf(
             listOf("C", "±", "%", "÷"),
             listOf("7", "8", "9", "×"),
@@ -101,66 +161,40 @@ fun Calculator() {
         )
 
         buttons.forEach { row ->
-            Div({ style { display("grid"); gridTemplateColumns("repeat(4, 1fr)"); gap(12.px) } }) {
+            div {
+                attrs {
+                    classes += "button-row"
+                }
                 row.forEach { label ->
-                    if (label == "0") {
-                        Button({
-                            attrs {
-                                style {
-                                    gridColumn("1 / span 2")
-                                    backgroundColor(if (label == "=") Color("#ff9500") else Color("#333"))
-                                    color(Color.white)
-                                    fontSize(32.px)
-                                    borderRadius(50.px)
-                                    border("none")
-                                    padding(20.px)
-                                    cursor("pointer")
-                                    transitions("all 0.2s")
-                                }
-                                onClick {
-                                    when (label) {
-                                        "C" -> clear()
-                                        "=" -> calculate()
-                                        "÷", "×", "-", "+" -> performOperation(label)
-                                        else -> inputNumber(label)
-                                    }
-                                }
-                            }
-                        }) { Text(label) }
-                    } else {
-                        Button({
-                            attrs {
-                                style {
-                                    backgroundColor(
-                                        when (label) {
-                                            in listOf("÷", "×", "-", "+", "=") -> Color("#ff9500")
-                                            "C" -> Color("#a6a6a6")
-                                            else -> Color("#333")
-                                        }
-                                    )
-                                    color(Color.white)
-                                    fontSize(32.px)
-                                    borderRadius(50.px)
-                                    border("none")
-                                    padding(20.px)
-                                    cursor("pointer")
-                                    property("transition", "all 0.2s")
-                                }
-                                onClick {
-                                    when (label) {
-                                        "C" -> clear()
-                                        "." -> inputDecimal()
-                                        "=" -> calculate()
-                                        "÷", "×", "-", "+" -> performOperation(label)
-                                        else -> inputNumber(label)
-                                    }
+                    val isZero = label == "0"
+                    val isOperator = label in listOf("÷", "×", "-", "+", "=")
+                    val isClear = label == "C"
+                    val isEquals = label == "="
+
+                    button(label) {
+                        attrs {
+                            classes += listOfNotNull(
+                                "button",
+                                if (isZero) "zero" else null,
+                                if (isOperator) "operator" else null,
+                                if (isClear) "clear" else null,
+                                if (isEquals) "equals" else null
+                            )
+                            if (isZero) style { gridColumn = "1 / span 2" }
+                            onClick {
+                                when (label) {
+                                    "C" -> clear()
+                                    "=" -> calculate()
+                                    "÷", "×", "-", "+" -> performOperation(label)
+                                    "." -> inputDecimal()
+                                    else -> inputNumber(label)
                                 }
                             }
-                        }) { Text(label) }
+                        }
+                        +label
                     }
                 }
             }
-            Br()
         }
     }
 }
