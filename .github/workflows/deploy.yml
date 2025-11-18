@@ -21,11 +21,11 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
 
       - name: Build with Gradle
-        run: ./gradlew jsBrowserProductionWebpack
+        run: ./gradlew jsBrowserDistribution  # Changed to Distribution for HTML mode
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./build/dist/js/productionExecutable
+          publish_dir: ./build/dist/js/productionExecutable  # Correct dir for distribution
           force_orphan: true
