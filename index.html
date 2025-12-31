@@ -3,492 +3,473 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HD-ODM | High Density Optical Data Matrix</title>
+    <title>AURA | Cloud-Optical Hybrid Engine</title>
+    
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
     <style>
         :root {
-            --bg-primary: #0d1117;
-            --bg-secondary: #161b22;
-            --accent: #238636;
-            --accent-hover: #2ea043;
-            --text-main: #c9d1d9;
-            --text-dim: #8b949e;
-            --border: #30363d;
-            --error: #da3633;
-            --info: #58a6ff;
+            --bg: #050505;
+            --panel: #0f1215;
+            --primary: #00f0ff;
+            --secondary: #7000ff;
+            --text: #e0e6ed;
+            --success: #00ff9d;
+            --error: #ff0055;
+            --font-mono: 'Courier New', Courier, monospace;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-            background-color: var(--bg-primary);
-            color: var(--text-main);
-            margin: 0;
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Segoe UI', sans-serif;
             display: flex;
-            flex-direction: column;
+            justify-content: center;
             align-items: center;
             min-height: 100vh;
+            margin: 0;
+            overflow-x: hidden;
         }
 
-        .container {
+        .main-container {
             width: 90%;
-            max-width: 800px;
-            margin-top: 40px;
+            max-width: 850px;
+            background: var(--panel);
+            border: 1px solid #333;
+            border-radius: 12px;
+            box-shadow: 0 0 40px rgba(0, 240, 255, 0.05);
+            padding: 2rem;
+            position: relative;
         }
 
         .header {
             text-align: center;
-            margin-bottom: 30px;
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 20px;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid #222;
+            padding-bottom: 1rem;
         }
 
-        .header h1 {
-            font-size: 2rem;
+        h1 {
             margin: 0;
-            background: linear-gradient(90deg, #58a6ff, #238636);
+            font-weight: 300;
+            letter-spacing: 2px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        .card {
-            background-color: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            padding: 20px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+        .badge {
+            background: #222;
+            padding: 2px 8px;
+            font-size: 0.7rem;
+            border-radius: 4px;
+            vertical-align: middle;
+            border: 1px solid #444;
+            color: var(--primary);
         }
 
+        /* Drop Zone */
         .drop-zone {
-            border: 2px dashed var(--border);
-            border-radius: 6px;
-            padding: 60px 20px;
+            border: 2px dashed #333;
+            border-radius: 8px;
+            padding: 4rem 2rem;
             text-align: center;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
-            overflow: hidden;
+            background: rgba(255, 255, 255, 0.01);
         }
 
-        .drop-zone:hover, .drop-zone.dragover {
-            border-color: var(--info);
-            background-color: rgba(88, 166, 255, 0.05);
+        .drop-zone:hover, .drop-zone.drag-over {
+            border-color: var(--primary);
+            background: rgba(0, 240, 255, 0.03);
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.1) inset;
         }
 
-        .drop-zone p {
-            margin: 0;
-            font-size: 1.1rem;
-            color: var(--text-dim);
-        }
+        .drop-zone h3 { margin: 0 0 10px 0; font-weight: 500; }
+        .drop-zone p { color: #666; font-size: 0.9rem; margin: 0; }
 
-        .drop-zone .icon {
-            font-size: 48px;
-            margin-bottom: 15px;
-            color: var(--text-dim);
-        }
-
-        /* Stats & Logs */
-        .status-panel {
-            margin-top: 20px;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 0.9rem;
-            background: #000;
-            padding: 15px;
-            border-radius: 6px;
-            border: 1px solid var(--border);
-            min-height: 100px;
-            max-height: 200px;
-            overflow-y: auto;
-        }
-
-        .log-entry { margin: 2px 0; }
-        .log-info { color: var(--info); }
-        .log-success { color: var(--accent); }
-        .log-error { color: var(--error); }
-        .log-warn { color: #d29922; }
-
-        /* Action Buttons */
-        .actions {
-            display: flex;
-            gap: 15px;
-            margin-top: 20px;
-            justify-content: center;
-        }
-
-        .btn {
-            background-color: var(--accent);
-            color: #fff;
-            border: 1px solid rgba(255,255,255,0.1);
-            padding: 10px 24px;
-            border-radius: 6px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            text-decoration: none;
-            transition: 0.2s;
-            display: none; /* Hidden by default */
-            align-items: center;
-            gap: 8px;
-        }
-
-        .btn:hover { background-color: var(--accent-hover); }
-        
-        .progress-container {
+        /* Progress Bar */
+        .progress-wrapper {
             width: 100%;
-            background-color: var(--border);
-            border-radius: 4px;
+            height: 4px;
+            background: #222;
             margin-top: 20px;
-            height: 6px;
+            border-radius: 2px;
             overflow: hidden;
             display: none;
         }
 
-        .progress-bar {
-            width: 0%;
+        .progress-fill {
             height: 100%;
-            background-color: var(--info);
-            transition: width 0.3s;
+            width: 0%;
+            background: linear-gradient(90deg, var(--secondary), var(--primary));
+            transition: width 0.2s linear;
         }
+
+        /* Console */
+        .console-log {
+            margin-top: 20px;
+            background: #000;
+            border: 1px solid #222;
+            border-radius: 6px;
+            padding: 15px;
+            height: 180px;
+            overflow-y: auto;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: #888;
+        }
+
+        .log-line { margin: 4px 0; border-left: 2px solid transparent; padding-left: 8px; }
+        .log-info { border-color: var(--primary); color: #ccc; }
+        .log-success { border-color: var(--success); color: var(--success); }
+        .log-error { border-color: var(--error); color: var(--error); }
+        .log-cloud { border-color: var(--secondary); color: #b98eff; }
+
+        /* Actions */
+        .actions {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .btn {
+            background: var(--panel);
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            padding: 10px 25px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            text-decoration: none;
+            font-size: 14px;
+            display: none;
+            transition: 0.2s;
+        }
+        
+        .btn:hover { background: var(--primary); color: #000; }
 
         canvas { display: none; }
-
-        .badge {
-            display: inline-block;
-            padding: 2px 6px;
-            border-radius: 10px;
-            font-size: 10px;
-            font-weight: bold;
-            border: 1px solid var(--border);
-            margin-left: 10px;
-            vertical-align: middle;
-            color: var(--text-dim);
-        }
-
     </style>
 </head>
 <body>
 
-<div class="container">
+<div class="main-container">
     <div class="header">
-        <h1>HD-ODM Engine <span class="badge">v2.0 PRO</span></h1>
-        <p style="color: var(--text-dim); margin-top:5px;">High Density Optical Data Matrix | Secure & Lossless</p>
+        <h1>AURA ENGINE <span class="badge">FIREBASE LINKED</span></h1>
+        <p style="color: #666; font-size: 0.8rem; margin-top:5px;">HYBRID OPTICAL DATA MATRIX SYSTEM</p>
     </div>
 
-    <div class="card">
-        <div class="drop-zone" id="dropZone">
-            <div class="icon">📂</div>
-            <p>Drag & Drop <b>Any File</b> to Encode <br> or <br> Drag <b>HD-ODM Image</b> to Decode</p>
-            <input type="file" id="fileInput" hidden>
-        </div>
-
-        <div class="progress-container" id="progressWrap">
-            <div class="progress-bar" id="progressBar"></div>
-        </div>
-
-        <div class="actions">
-            <a id="downloadBtn" class="btn">⬇ Download Code (PNG)</a>
-            <button id="resetBtn" class="btn" style="background: #333; display: inline-flex;" onclick="location.reload()">Reset System</button>
-        </div>
+    <div class="drop-zone" id="dropZone">
+        <h3>INITIATE LINK</h3>
+        <p>Drag & Drop File to Encode or Image to Decode</p>
+        <input type="file" id="fileInput" hidden>
     </div>
 
-    <div class="status-panel" id="consoleLog">
-        <div class="log-entry">> System initialized. Ready for I/O operations...</div>
+    <div class="progress-wrapper" id="progressWrap">
+        <div class="progress-fill" id="progressBar"></div>
     </div>
-    
-    <canvas id="processorCanvas"></canvas>
+
+    <div class="console-log" id="console">
+        <div class="log-line log-info">> System Initialized.</div>
+        <div class="log-line log-cloud">> Connected to Firestore [experiment-26a5c]...</div>
+    </div>
+
+    <div class="actions">
+        <a id="downloadBtn" class="btn">DOWNLOAD CODE</a>
+        <button id="resetBtn" class="btn" onclick="location.reload()" style="border-color:#444; color:#aaa;">RESET</button>
+    </div>
+
+    <canvas id="processor"></canvas>
 </div>
 
 <script>
-    /**
-     * HD-ODM ENGINE (JavaScript)
-     * Handles binary-to-pixel mapping with Header Protocol
-     */
+    // --- 1. FIREBASE CONFIGURATION ---
+    const firebaseConfig = {
+        apiKey: "AIzaSyD60VG7aqXr-3TFKBdQRT8XbaEl54J3f8s",
+        authDomain: "experiment-26a5c.firebaseapp.com",
+        projectId: "experiment-26a5c",
+        storageBucket: "experiment-26a5c.firebasestorage.app",
+        messagingSenderId: "791493232373",
+        appId: "1:791493232373:web:f1fb821e86752ea7a4a7bc"
+    };
 
-    // --- Configuration ---
+    // Initialize Firebase
+    try {
+        firebase.initializeApp(firebaseConfig);
+        var db = firebase.firestore();
+        log("Firebase connection established successfully.", "cloud");
+    } catch (e) {
+        log("Firebase Error: " + e.message, "error");
+    }
+
+    // --- 2. CORE VARIABLES ---
     const CONFIG = {
-        MAGIC_BYTES: "HDODM", // Signature to identify our images
-        VERSION: 1,
-        MAX_SIZE_WARNING: 50 * 1024 * 1024 // 50MB Warning threshold
+        COLLECTION: 'aura_registry', // Firestore Collection Name
+        DELIMITER: '|||',
+        CHUNK_SIZE: 5 * 1024 * 1024 // For chunking if needed later
     };
 
-    // --- UI Elements ---
-    const dropZone = document.getElementById('dropZone');
-    const fileInput = document.getElementById('fileInput');
-    const consoleLog = document.getElementById('consoleLog');
-    const downloadBtn = document.getElementById('downloadBtn');
-    const progressWrap = document.getElementById('progressWrap');
-    const progressBar = document.getElementById('progressBar');
-    const canvas = document.getElementById('processorCanvas');
-    const ctx = canvas.getContext('2d', { alpha: false, willReadFrequently: true });
+    const ui = {
+        dropZone: document.getElementById('dropZone'),
+        fileInput: document.getElementById('fileInput'),
+        console: document.getElementById('console'),
+        canvas: document.getElementById('processor'),
+        ctx: document.getElementById('processor').getContext('2d', { willReadFrequently: true }),
+        dlBtn: document.getElementById('downloadBtn'),
+        resetBtn: document.getElementById('resetBtn'),
+        progressWrap: document.getElementById('progressWrap'),
+        progressBar: document.getElementById('progressBar')
+    };
 
-    // --- Utils: Logger ---
-    function log(msg, type = 'info') {
-        const div = document.createElement('div');
-        div.className = `log-entry log-${type}`;
-        div.innerText = `> ${msg}`;
-        consoleLog.appendChild(div);
-        consoleLog.scrollTop = consoleLog.scrollHeight;
-    }
-
-    // --- Utils: Checksum (Adler-32 for speed) ---
-    function adler32(data) {
-        let a = 1, b = 0, L = data.length, i = 0;
-        while (L > 0) {
-            let n = Math.min(L, 3800);
-            L -= n;
-            while (n--) {
-                a += data[i++];
-                b += a;
-            }
-            a %= 65521;
-            b %= 65521;
-        }
-        return (b << 16) | a;
-    }
-
-    // --- Event Listeners ---
-    dropZone.onclick = () => fileInput.click();
+    // --- 3. EVENT LISTENERS ---
+    ui.dropZone.onclick = () => ui.fileInput.click();
     
-    fileInput.onchange = (e) => handleFile(e.target.files[0]);
-    
-    dropZone.ondragover = (e) => {
+    ui.dropZone.ondragover = (e) => {
         e.preventDefault();
-        dropZone.classList.add('dragover');
+        ui.dropZone.classList.add('drag-over');
     };
     
-    dropZone.ondragleave = () => dropZone.classList.remove('dragover');
+    ui.dropZone.ondragleave = () => ui.dropZone.classList.remove('drag-over');
     
-    dropZone.ondrop = (e) => {
+    ui.dropZone.ondrop = (e) => {
         e.preventDefault();
-        dropZone.classList.remove('dragover');
-        handleFile(e.dataTransfer.files[0]);
+        ui.dropZone.classList.remove('drag-over');
+        handleIO(e.dataTransfer.files[0]);
     };
 
-    // --- Main Handler ---
-    async function handleFile(file) {
+    ui.fileInput.onchange = (e) => handleIO(e.target.files[0]);
+
+    // --- 4. MAIN CONTROLLER ---
+    async function handleIO(file) {
         if (!file) return;
 
-        // Check if it's an image to decode or a file to encode
         if (file.type === "image/png") {
-            // Attempt decode
-            log(`Detected PNG Image: ${file.name}. Analyzing structure...`, 'info');
-            decodeProcess(file);
+            // Check filename pattern to guess if it's our code, otherwise try to decode anyway
+            log("Image detected. Attempting to decode...", "info");
+            decodeSequence(file);
         } else {
-            // Encode
-            log(`File detected: ${file.name} (${formatBytes(file.size)})`, 'info');
-            if(file.size > CONFIG.MAX_SIZE_WARNING) {
-                log("WARNING: File is large. Browser may freeze momentarily.", 'warn');
-            }
-            encodeProcess(file);
+            log(`File detected: ${file.name} (${formatBytes(file.size)})`, "info");
+            encodeSequence(file);
         }
     }
 
-    // --- ENCODER ENGINE ---
-    async function encodeProcess(file) {
+    // --- 5. ENCODER ENGINE (HYBRID) ---
+    async function encodeSequence(file) {
         try {
             updateProgress(10);
-            log("Reading binary data...", 'info');
             
+            // A. Generate Unique Handshake ID
+            const fileUUID = generateUUID();
+            log(`Generated Secure ID: ${fileUUID}`, "success");
+
+            // B. Read File Data
             const buffer = await file.arrayBuffer();
             const rawData = new Uint8Array(buffer);
-            
             updateProgress(30);
-            log("Calculating Integrity Checksum...", 'info');
-            const checksum = adler32(rawData); // Calculate checksum of raw file
-            
-            // --- HEADER CONSTRUCTION ---
-            // Format: MAGIC (5) | VER (1) | CHECKSUM (4) | NAMELEN (2) | NAME (Var) | DATA
-            const encoder = new TextEncoder();
-            const magicBytes = encoder.encode(CONFIG.MAGIC_BYTES);
-            const nameBytes = encoder.encode(file.name);
-            const nameLen = nameBytes.length;
-            
-            // Header Buffer Size
-            const headerSize = magicBytes.length + 1 + 4 + 2 + nameLen;
-            const fullSize = headerSize + rawData.length;
-            
-            const finalBuffer = new Uint8Array(fullSize);
-            let offset = 0;
 
-            // 1. Magic
-            finalBuffer.set(magicBytes, offset); offset += magicBytes.length;
-            // 2. Version
-            finalBuffer[offset] = CONFIG.VERSION; offset += 1;
-            // 3. Checksum (32-bit int -> 4 bytes)
-            new DataView(finalBuffer.buffer).setUint32(offset, checksum, false); offset += 4; // Big Endian
-            // 4. Name Length (16-bit -> 2 bytes)
-            new DataView(finalBuffer.buffer).setUint16(offset, nameLen, false); offset += 2;
-            // 5. Name
-            finalBuffer.set(nameBytes, offset); offset += nameLen;
-            // 6. Data
-            finalBuffer.set(rawData, offset);
-
-            log(`Header constructed. Total payload: ${formatBytes(fullSize)}`, 'success');
+            // C. Sync Metadata to Firestore
+            log("Uploading Metadata to Cloud...", "cloud");
+            await db.collection(CONFIG.COLLECTION).doc(fileUUID).set({
+                fileName: file.name,
+                fileSize: file.size,
+                mimeType: file.type,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                integrityHash: simpleHash(rawData) // Basic integrity check
+            });
+            log("Cloud handshake complete.", "cloud");
             updateProgress(50);
 
-            // --- RENDER TO PIXELS ---
-            log("Mapping binary to RGB Matrix...", 'info');
+            // D. Construct Payload [UUID + DELIMITER + RAW DATA]
+            const encoder = new TextEncoder();
+            const headerBytes = encoder.encode(fileUUID + CONFIG.DELIMITER);
             
-            const totalPixels = Math.ceil(fullSize / 3);
-            const side = Math.ceil(Math.sqrt(totalPixels));
+            const totalSize = headerBytes.length + rawData.length;
+            const finalBuffer = new Uint8Array(totalSize);
             
-            canvas.width = side;
-            canvas.height = side;
-            
-            const imgData = ctx.createImageData(side, side);
-            
-            // Loop optimized
-            for (let i = 0; i < fullSize; i++) {
-                const pixelIndex = Math.floor(i / 3) * 4;
-                const channel = i % 3; // 0=R, 1=G, 2=B
-                imgData.data[pixelIndex + channel] = finalBuffer[i];
-                imgData.data[pixelIndex + 3] = 255; // Alpha is always 255
-            }
-            
-            ctx.putImageData(imgData, 0, 0);
+            finalBuffer.set(headerBytes, 0);
+            finalBuffer.set(rawData, headerBytes.length);
+
+            // E. Render to Optical Matrix (RGB)
+            log("Rendering Optical Matrix...", "info");
+            renderToCanvas(finalBuffer);
             updateProgress(100);
+
+            // F. UI Updates
+            ui.dlBtn.download = `AURA_${file.name}.png`;
+            ui.dlBtn.href = ui.canvas.toDataURL("image/png");
+            ui.dlBtn.style.display = "inline-block";
+            ui.resetBtn.style.display = "inline-block";
             
-            log(`Encoding Successful! Grid Size: ${side}x${side}px`, 'success');
-            
-            // Prepare Download
-            downloadBtn.href = canvas.toDataURL("image/png");
-            downloadBtn.download = `HDODM_${file.name}.png`;
-            downloadBtn.style.display = 'inline-flex';
-            
+            log("Encoding Success! Download generated.", "success");
+
         } catch (err) {
-            log(`Encoding Error: ${err.message}`, 'error');
+            log("Encoding Failed: " + err.message, "error");
             console.error(err);
         }
     }
 
-    // --- DECODER ENGINE ---
-    function decodeProcess(file) {
-        const img = new Image();
-        const url = URL.createObjectURL(file);
-        img.src = url;
+    function renderToCanvas(data) {
+        const pixelCount = Math.ceil(data.length / 3);
+        const side = Math.ceil(Math.sqrt(pixelCount));
+        
+        ui.canvas.width = side;
+        ui.canvas.height = side;
+        
+        const imgData = ui.ctx.createImageData(side, side);
+        
+        // High-speed writing
+        for (let i = 0; i < data.length; i++) {
+            const pIdx = Math.floor(i / 3) * 4;
+            const channel = i % 3; // 0=R, 1=G, 2=B
+            imgData.data[pIdx + channel] = data[i];
+            imgData.data[pIdx + 3] = 255; // Alpha
+        }
 
-        img.onload = () => {
-            log("Image loaded into memory. Scanning...", 'info');
-            canvas.width = img.width;
-            canvas.height = img.height;
-            ctx.drawImage(img, 0, 0);
-            URL.revokeObjectURL(url); // Cleanup memory
-            
-            updateProgress(30);
-            
+        ui.ctx.putImageData(imgData, 0, 0);
+    }
+
+    // --- 6. DECODER ENGINE (HYBRID) ---
+    function decodeSequence(file) {
+        const img = new Image();
+        img.src = URL.createObjectURL(file);
+        
+        img.onload = async () => {
             try {
-                const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-                const pixels = imgData.data;
+                ui.canvas.width = img.width;
+                ui.canvas.height = img.height;
+                ui.ctx.drawImage(img, 0, 0);
                 
-                // Extract useful bytes (Skip alpha)
-                // We estimate buffer size first to avoid constant resizing
+                log("Scanning pixel data...", "info");
+                updateProgress(20);
+                
+                const imgData = ui.ctx.getImageData(0, 0, img.width, img.height);
+                const pixels = imgData.data;
                 const totalBytes = Math.floor((pixels.length / 4) * 3);
                 const buffer = new Uint8Array(totalBytes);
                 
+                // Extract Bytes
                 let bufIdx = 0;
                 for (let i = 0; i < pixels.length; i += 4) {
                     buffer[bufIdx++] = pixels[i];   // R
                     buffer[bufIdx++] = pixels[i+1]; // G
                     buffer[bufIdx++] = pixels[i+2]; // B
                 }
+
+                updateProgress(40);
                 
-                updateProgress(60);
-                parseHeaderAndRecover(buffer);
+                // Extract Header (UUID)
+                const decoder = new TextDecoder();
+                // Scan first 100 bytes for delimiter to find ID
+                const headerSearchWin = buffer.subarray(0, 100);
+                const headerString = decoder.decode(headerSearchWin);
                 
+                const splitIdx = headerString.indexOf(CONFIG.DELIMITER);
+                
+                if (splitIdx === -1) {
+                    throw new Error("No AURA signature found. Invalid code.");
+                }
+
+                const fileUUID = headerString.substring(0, splitIdx);
+                const payloadStart = splitIdx + CONFIG.DELIMITER.length; // Length of delimiter chars
+                
+                log(`Signature found: ${fileUUID}`, "success");
+                log("Fetching Metadata from Cloud...", "cloud");
+                
+                // Fetch from Firestore
+                const doc = await db.collection(CONFIG.COLLECTION).doc(fileUUID).get();
+                
+                if (!doc.exists) {
+                    throw new Error("Metadata not found in cloud. File may be expired.");
+                }
+
+                const meta = doc.data();
+                log(`Cloud Match: ${meta.fileName} (${formatBytes(meta.fileSize)})`, "cloud");
+                updateProgress(80);
+
+                // Reconstruct File
+                // We use meta.fileSize to slice the buffer exactly, ignoring padding zeros
+                const fileData = buffer.subarray(payloadStart, payloadStart + meta.fileSize);
+                
+                // Integrity Check (Optional but powerful)
+                const currentHash = simpleHash(fileData);
+                if(currentHash !== meta.integrityHash) {
+                    log("WARNING: Integrity Check Failed! File might be corrupted.", "error");
+                } else {
+                    log("Integrity Verified: 100% Match", "success");
+                }
+
+                downloadFile(fileData, meta.fileName, meta.mimeType);
+                updateProgress(100);
+
             } catch (err) {
-                log(`Decoding Error: ${err.message}`, 'error');
+                log("Decoding Error: " + err.message, "error");
+                updateProgress(0);
             }
         };
-        
-        img.onerror = () => log("Failed to load image.", 'error');
     }
 
-    function parseHeaderAndRecover(buffer) {
-        log("Parsing Header Protocol...", 'info');
-        let offset = 0;
-        const decoder = new TextDecoder();
-        const dv = new DataView(buffer.buffer);
-
-        // 1. Validate Magic Bytes
-        const magicLen = CONFIG.MAGIC_BYTES.length;
-        const fileMagic = decoder.decode(buffer.subarray(0, magicLen));
-        
-        if (fileMagic !== CONFIG.MAGIC_BYTES) {
-            log("Invalid File Signature! This is not an HD-ODM Code.", 'error');
-            // Fallback strategy could go here, but strict mode is safer
-            return;
-        }
-        offset += magicLen;
-
-        // 2. Version Check
-        const version = buffer[offset];
-        offset += 1;
-        if (version !== CONFIG.VERSION) {
-            log(`Version Mismatch (File: v${version}, Sys: v${CONFIG.VERSION})`, 'warn');
-        }
-
-        // 3. Extract Checksum
-        const storedChecksum = dv.getUint32(offset, false);
-        offset += 4;
-
-        // 4. Get Name
-        const nameLen = dv.getUint16(offset, false);
-        offset += 2;
-        const fileName = decoder.decode(buffer.subarray(offset, offset + nameLen));
-        offset += nameLen;
-
-        log(`Metadata Found: "${fileName}"`, 'success');
-
-        // 5. Extract Body (Crucial: Remove trailing zero-padding if any)
-        // Since we don't store exact file size in header (to save space), 
-        // we might have 1 or 2 extra bytes at end due to RGB triplet.
-        // However, usually not an issue for most file types, but strict check handles it.
-        // For absolute precision, we rely on the user downloading the stream. 
-        
-        // Let's verify checksum to determine exact end if needed, 
-        // but typically the extra 1-2 bytes (0x00) don't break zips/mp3s. 
-        // For this version, we pass the rest of the buffer.
-        
-        const fileData = buffer.subarray(offset); 
-        
-        // Optional: Integrity Check
-        log("Verifying Integrity...", 'info');
-        // Note: Checksum calc on 10MB+ might take a second
-        // We scan the whole remaining buffer. If there are padding zeros at end, 
-        // checksum might differ. *Production fix*: We should store size in header for exact cut.
-        // BUT, to keep it simple and robust:
-        
-        const blob = new Blob([fileData], {type: "application/octet-stream"});
-        const dUrl = URL.createObjectURL(blob);
-        
+    // --- 7. UTILITIES ---
+    
+    function downloadFile(data, name, type) {
+        const blob = new Blob([data], { type: type || 'application/octet-stream' });
+        const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
-        a.href = dUrl;
-        a.download = "RECOVERED_" + fileName;
+        a.href = url;
+        a.download = name;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
-        
-        updateProgress(100);
-        log("File Recovered Successfully!", 'success');
+        log("File recovered and downloaded.", "success");
+        ui.resetBtn.style.display = "inline-block";
     }
 
-    // --- Utils: Formatter ---
+    function generateUUID() {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        });
+    }
+
+    function simpleHash(data) {
+        let hash = 0, i, chr;
+        if (data.length === 0) return hash;
+        // Sample hash for speed on large files (checking every 10th byte)
+        for (i = 0; i < data.length; i = i + 10) { 
+            chr = data[i];
+            hash = ((hash << 5) - hash) + chr;
+            hash |= 0; 
+        }
+        return hash;
+    }
+
     function formatBytes(bytes, decimals = 2) {
-        if (bytes === 0) return '0 Bytes';
+        if (!+bytes) return '0 Bytes';
         const k = 1024;
         const dm = decimals < 0 ? 0 : decimals;
         const sizes = ['Bytes', 'KB', 'MB', 'GB'];
         const i = Math.floor(Math.log(bytes) / Math.log(k));
-        return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+        return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
     }
 
-    function updateProgress(val) {
-        progressWrap.style.display = 'block';
-        progressBar.style.width = val + '%';
-        if(val >= 100) {
-            setTimeout(() => { progressWrap.style.display = 'none'; progressBar.style.width = '0%'; }, 2000);
+    function log(msg, type = "info") {
+        const div = document.createElement('div');
+        div.className = `log-line log-${type}`;
+        div.innerText = `> ${msg}`;
+        ui.console.appendChild(div);
+        ui.console.scrollTop = ui.console.scrollHeight;
+    }
+
+    function updateProgress(percent) {
+        ui.progressWrap.style.display = 'block';
+        ui.progressBar.style.width = percent + '%';
+        if (percent >= 100) {
+            setTimeout(() => { ui.progressWrap.style.display = 'none'; ui.progressBar.style.width = '0%'; }, 2000);
         }
     }
-
 </script>
-
 </body>
 </html>
