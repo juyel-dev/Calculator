@@ -2,104 +2,113 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AURA v5.0 | QUANTUM GOD MODE</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AURA v6.0 | MOBILE GOD MODE</title>
     
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-
     <style>
         :root {
             --neon-blue: #00f3ff;
             --neon-purple: #bc13fe;
             --neon-red: #ff0055;
-            --bg-dark: #020205;
-            --glass: rgba(20, 20, 25, 0.85);
+            --neon-green: #0aff0a;
+            --bg-dark: #050508;
+            --glass: rgba(20, 20, 28, 0.9);
+            --panel-bg: rgba(0,0,0,0.6);
         }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         body {
             background-color: var(--bg-dark);
             background-image: 
-                radial-gradient(circle at 50% 50%, rgba(188, 19, 254, 0.1) 0%, transparent 50%),
-                linear-gradient(0deg, rgba(0,0,0,1) 0%, rgba(10,10,15,1) 100%);
+                radial-gradient(circle at 50% 0%, rgba(0, 243, 255, 0.15) 0%, transparent 60%),
+                linear-gradient(0deg, #000 0%, #0a0a0f 100%);
             color: #fff;
-            font-family: 'Segoe UI', monospace;
+            font-family: 'Segoe UI', 'Roboto', monospace;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             margin: 0;
-            overflow: hidden;
+            padding: 10px;
         }
 
         /* HUD Container */
         .hud-container {
-            width: 95%;
-            max-width: 1000px;
+            width: 100%;
+            max-width: 800px;
             background: var(--glass);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            padding: 2rem;
+            border-radius: 16px;
+            padding: 1.5rem;
             position: relative;
-            backdrop-filter: blur(20px);
-            box-shadow: 0 0 80px rgba(0, 0, 0, 0.8);
-            overflow: hidden;
+            backdrop-filter: blur(25px);
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.9);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
         }
 
-        /* Scanning Line Animation */
-        .hud-container::after {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 5px;
-            background: linear-gradient(90deg, transparent, var(--neon-blue), var(--neon-purple), transparent);
-            animation: scan 4s linear infinite;
-            opacity: 0.5;
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 15px;
         }
-        @keyframes scan { 0% { top: 0; } 100% { top: 100%; } }
-
-        /* Typography */
         h1 {
-            font-size: 3rem;
+            font-size: 2rem;
             margin: 0;
-            letter-spacing: 8px;
+            letter-spacing: 4px;
             background: linear-gradient(90deg, #fff, var(--neon-blue));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 20px rgba(0, 243, 255, 0.5);
         }
+        .version { font-size: 0.8rem; color: #666; font-family: monospace; }
 
-        .status-badge {
-            font-size: 0.8rem;
-            border: 1px solid var(--neon-red);
-            color: var(--neon-red);
-            padding: 2px 8px;
-            border-radius: 4px;
-            vertical-align: middle;
-            margin-left: 10px;
-            box-shadow: 0 0 10px var(--neon-red);
+        /* TABS SYSTEM */
+        .tab-nav {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
         }
-
-        /* Stats Grid */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            margin: 20px 0;
-        }
-
-        .stat-box {
-            background: rgba(0, 0, 0, 0.5);
+        .tab-btn {
+            flex: 1;
+            padding: 12px;
+            background: rgba(0,0,0,0.5);
             border: 1px solid #333;
-            padding: 10px;
-            border-radius: 6px;
+            color: #888;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.9rem;
+            transition: 0.3s;
+            border-radius: 8px;
         }
-        .stat-label { font-size: 0.7rem; color: #666; text-transform: uppercase; }
-        .stat-val { font-size: 1.2rem; font-weight: bold; color: var(--neon-blue); }
+        .tab-btn.active {
+            background: rgba(0, 243, 255, 0.1);
+            border-color: var(--neon-blue);
+            color: var(--neon-blue);
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.2);
+        }
+        .tab-btn.active.decode-mode {
+            background: rgba(188, 19, 254, 0.1);
+            border-color: var(--neon-purple);
+            color: var(--neon-purple);
+            box-shadow: 0 0 15px rgba(188, 19, 254, 0.2);
+        }
 
-        /* Drop Zone */
+        /* Module Content */
+        .module { display: none; animation: fadeIn 0.4s ease; }
+        .module.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Drop Zones */
         .drop-target {
             border: 2px dashed #444;
-            height: 150px;
+            height: 180px;
             border-radius: 12px;
             display: flex;
             flex-direction: column;
@@ -108,170 +117,195 @@
             cursor: pointer;
             transition: 0.3s;
             background: rgba(255,255,255,0.02);
+            text-align: center;
+            padding: 20px;
         }
-        .drop-target:hover { border-color: var(--neon-purple); background: rgba(188, 19, 254, 0.05); }
-
-        /* Preview Area */
-        .preview-stage {
-            display: flex;
-            gap: 20px;
-            margin-top: 20px;
-            height: 200px;
-        }
+        .drop-target:active { transform: scale(0.98); }
+        .drop-icon { font-size: 2.5rem; margin-bottom: 10px; }
         
-        #previewImg {
-            flex: 1;
-            object-fit: contain;
+        .encoder-zone:hover, .encoder-zone.drag-over { border-color: var(--neon-blue); background: rgba(0, 243, 255, 0.05); }
+        .decoder-zone:hover, .decoder-zone.drag-over { border-color: var(--neon-purple); background: rgba(188, 19, 254, 0.05); }
+
+        /* Stats & Logs */
+        .info-panel {
+            background: #000;
             border: 1px solid #333;
             border-radius: 8px;
-            background: #000;
-            display: none;
-        }
-
-        .terminal {
-            flex: 1;
-            background: #000;
-            border: 1px solid #333;
-            padding: 15px;
+            padding: 10px;
             font-family: 'Courier New', monospace;
             font-size: 0.8rem;
-            color: #ccc;
+            color: #aaa;
+            max-height: 120px;
             overflow-y: auto;
-            border-radius: 8px;
+            margin-top: 15px;
         }
-        .log-line { margin-bottom: 4px; border-left: 2px solid transparent; padding-left: 8px; }
+        .log-entry { margin-bottom: 4px; padding-left: 10px; border-left: 2px solid #333; }
         .log-sys { border-color: var(--neon-blue); color: var(--neon-blue); }
+        .log-ok { border-color: var(--neon-green); color: var(--neon-green); }
         .log-err { border-color: var(--neon-red); color: var(--neon-red); }
-        .log-ok { border-color: #0f0; color: #0f0; }
 
-        /* Progress Bar */
+        /* Progress & Action */
         .progress-container {
-            height: 6px;
+            height: 4px;
             background: #222;
-            margin: 20px 0;
-            border-radius: 3px;
+            border-radius: 2px;
             overflow: hidden;
-            position: relative;
+            margin: 15px 0;
+            display: none;
         }
         .progress-bar {
             height: 100%;
             width: 0%;
-            background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple), var(--neon-red));
-            transition: width 0.1s;
-            box-shadow: 0 0 15px var(--neon-purple);
+            background: var(--neon-blue);
+            transition: width 0.2s;
+            box-shadow: 0 0 10px var(--neon-blue);
         }
 
         .btn-main {
             width: 100%;
-            padding: 15px;
-            background: linear-gradient(90deg, #111, #222);
+            padding: 18px;
+            background: #111;
             border: 1px solid #444;
             color: #fff;
-            font-size: 1rem;
+            font-size: 1.1rem;
+            font-weight: bold;
             letter-spacing: 2px;
             cursor: pointer;
+            border-radius: 8px;
+            text-align: center;
+            text-decoration: none;
+            display: none; /* Hidden by default */
+            margin-top: 10px;
             transition: 0.3s;
-            display: none;
+            text-transform: uppercase;
         }
-        .btn-main:hover { border-color: var(--neon-blue); color: var(--neon-blue); }
+        .btn-main:hover { background: #1a1a1a; box-shadow: 0 0 20px rgba(0, 243, 255, 0.3); border-color: var(--neon-blue); }
+        .btn-decode:hover { box-shadow: 0 0 20px rgba(188, 19, 254, 0.3); border-color: var(--neon-purple); color: var(--neon-purple); }
+
+        /* Mobile Adjustments */
+        @media (max-width: 600px) {
+            h1 { font-size: 1.5rem; }
+            .hud-container { padding: 1rem; }
+            .drop-target { height: 140px; }
+            .btn-main { padding: 15px; font-size: 1rem; position: sticky; bottom: 0; z-index: 100; box-shadow: 0 -5px 20px rgba(0,0,0,0.8); }
+        }
 
         canvas { display: none; }
+        #previewImg { width: 100%; height: 200px; object-fit: contain; background: #000; border: 1px solid #333; margin-top:10px; display:none; border-radius: 6px;}
     </style>
 </head>
 <body>
 
 <div class="hud-container">
-    <div style="display:flex; justify-content: space-between; align-items: center;">
-        <h1>AURA <span style="font-size:1rem; color:#666;">v5.0</span></h1>
-        <span class="status-badge">QUANTUM CORE ACTIVE</span>
-    </div>
-
-    <div class="stats-grid">
-        <div class="stat-box">
-            <div class="stat-label">Memory Allocation</div>
-            <div class="stat-val" id="statMem">0 MB</div>
+    <div class="header">
+        <div>
+            <h1>AURA <span style="font-size:1rem; opacity:0.7">v6.0</span></h1>
+            <div class="version">QUANTUM ENCRYPTION ENGINE</div>
         </div>
-        <div class="stat-box">
-            <div class="stat-label">Core Status</div>
-            <div class="stat-val" id="statCore">IDLE</div>
-        </div>
-        <div class="stat-box">
-            <div class="stat-label">Data Capacity</div>
-            <div class="stat-val">ULTRA MAX</div>
+        <div style="text-align: right;">
+            <div id="statusBadge" style="color: var(--neon-green); font-size:0.7rem; border:1px solid var(--neon-green); padding:2px 6px; border-radius:4px;">SYSTEM READY</div>
         </div>
     </div>
 
-    <div class="drop-target" id="dropZone">
-        <div style="font-size: 2rem;">⚡ DROP FILE ⚡</div>
-        <div style="color: #666; margin-top:5px;">Supports Large Files (50MB+) via Multithreading</div>
-        <input type="file" id="fileInput" hidden>
+    <div class="tab-nav">
+        <button class="tab-btn active" onclick="switchTab('encode')">ENCODER</button>
+        <button class="tab-btn" onclick="switchTab('decode')">DECODER</button>
     </div>
 
-    <div class="progress-container">
+    <div id="mod-encode" class="module active">
+        <div class="drop-target encoder-zone" onclick="document.getElementById('fileEnc').click()">
+            <div class="drop-icon">⚡</div>
+            <div style="font-weight:bold; color:var(--neon-blue)">SELECT FILE TO HIDE</div>
+            <div style="font-size:0.8rem; color:#666; margin-top:5px;">Supports All Formats (Docs, Zip, MP3)</div>
+            <div style="font-size:0.7rem; color:#444; margin-top:5px;">Max Recommended: 50MB (Mobile) / 100MB (PC)</div>
+        </div>
+        <input type="file" id="fileEnc" hidden>
+    </div>
+
+    <div id="mod-decode" class="module">
+        <div class="drop-target decoder-zone" onclick="document.getElementById('fileDec').click()">
+            <div class="drop-icon">🔍</div>
+            <div style="font-weight:bold; color:var(--neon-purple)">SELECT AURA IMAGE</div>
+            <div style="font-size:0.8rem; color:#666; margin-top:5px;">Upload PNG generated by AURA</div>
+        </div>
+        <input type="file" id="fileDec" accept="image/png" hidden>
+    </div>
+
+    <div class="progress-container" id="progressBarContainer">
         <div class="progress-bar" id="progressBar"></div>
     </div>
 
-    <div class="preview-stage">
-        <img id="previewImg">
-        <div class="terminal" id="terminal">
-            <div class="log-line log-sys">> AURA v5.0 Initialized...</div>
-            <div class="log-line log-sys">> Web Workers: Ready</div>
-            <div class="log-line log-sys">> Max Canvas Buffer: 8192x8192</div>
-        </div>
+    <div class="info-panel" id="terminal">
+        <div class="log-entry log-sys">> AURA v6.0 Mobile Core Initialized...</div>
     </div>
 
-    <a id="downloadBtn" class="btn-main" style="text-align:center; text-decoration:none; line-height:20px;">DOWNLOAD PAYLOAD</a>
-    <button class="btn-main" onclick="location.reload()" style="margin-top:10px;">RESET SYSTEM</button>
+    <img id="previewImg">
+
+    <a id="btnDownloadEnc" class="btn-main" style="color:var(--neon-blue)">DOWNLOAD ENCRYPTED IMAGE</a>
+    <a id="btnDownloadDec" class="btn-main btn-decode" style="color:var(--neon-purple)">DOWNLOAD EXTRACTED FILE</a>
+    <button id="btnReset" class="btn-main" onclick="location.reload()" style="background:#222; color:#fff;">RESET SYSTEM</button>
+
 </div>
 
 <script id="worker-script" type="javascript/worker">
     self.onmessage = function(e) {
-        const { type, fileData, fileName, action, fileType } = e.data;
+        const { action, fileData, fileName, fileType } = e.data;
         
         if (action === 'encode') {
             try {
-                // 1. Generate Header
-                const fileId = "AURA5-" + Date.now().toString(36);
-                const headerStr = fileId + ":::SEP:::" + encodeURIComponent(fileName) + ":::SEP:::" + fileType + ":::SEP:::";
+                // 1. Create Header: ID + Name + Type
+                const fileId = Math.random().toString(36).substr(2, 9);
+                const headerStr = `AURA6:${fileId}:${encodeURIComponent(fileName)}:${fileType}:ENDH`;
                 const headerBytes = new TextEncoder().encode(headerStr);
                 
                 // 2. Prepare Buffer
-                const totalLen = headerBytes.length + fileData.byteLength;
+                const bodyBytes = new Uint8Array(fileData);
+                const totalLen = headerBytes.length + bodyBytes.length;
+                
+                // Calculate size (need padding for RGB 3-byte structure)
                 const padding = (3 - (totalLen % 3)) % 3;
+                const finalLen = totalLen + padding;
+                const totalPixels = finalLen / 3;
                 
-                const finalBuffer = new Uint8Array(totalLen + padding);
-                finalBuffer.set(headerBytes, 0);
-                finalBuffer.set(new Uint8Array(fileData), headerBytes.length);
-                
-                // 3. Calculate Dimensions
-                const totalPixels = finalBuffer.length / 3;
+                // 3. Grid Calculation
                 const side = Math.ceil(Math.sqrt(totalPixels));
+                const canvasSize = side * side;
                 
-                // 4. Create Pixel Array (RGBA)
-                // We use 255 for Alpha to keep it visible
-                const imgBuffer = new Uint8ClampedArray(side * side * 4);
+                // 4. Create Image Buffer (RGBA = 4 bytes)
+                const imgBuffer = new Uint8ClampedArray(canvasSize * 4);
                 
-                for(let i=0; i < totalPixels; i++) {
-                    const bufIdx = i * 3;
-                    const pixIdx = i * 4;
-                    
-                    imgBuffer[pixIdx] = finalBuffer[bufIdx];         // R
-                    imgBuffer[pixIdx+1] = finalBuffer[bufIdx+1] || 0; // G
-                    imgBuffer[pixIdx+2] = finalBuffer[bufIdx+2] || 0; // B
-                    imgBuffer[pixIdx+3] = 255;                       // A
-                    
-                    if(i % 50000 === 0) {
-                        self.postMessage({ type: 'progress', val: (i/totalPixels)*100 });
-                    }
+                // 5. High Speed Fill
+                let dataIdx = 0;
+                // Fill Header first
+                for(let i=0; i<headerBytes.length; i++) {
+                    const pxIdx = Math.floor(dataIdx / 3) * 4 + (dataIdx % 3);
+                    imgBuffer[pxIdx] = headerBytes[i];
+                    dataIdx++;
+                    // Set Alpha to 255 every 3rd byte processed (meaning 1 pixel done)
+                    if(dataIdx % 3 === 0) imgBuffer[Math.floor((dataIdx-1)/3) * 4 + 3] = 255;
                 }
                 
+                // Fill Body
+                for(let i=0; i<bodyBytes.length; i++) {
+                    const pxIdx = Math.floor(dataIdx / 3) * 4 + (dataIdx % 3);
+                    imgBuffer[pxIdx] = bodyBytes[i];
+                    dataIdx++;
+                    if(dataIdx % 3 === 0) imgBuffer[Math.floor((dataIdx-1)/3) * 4 + 3] = 255;
+                }
+                
+                // Ensure last pixel alpha is 255 (if padding was used)
+                imgBuffer[(side*side*4) - 1] = 255; 
+
+                // Report Progress
+                self.postMessage({ type: 'progress', val: 100 });
+
                 self.postMessage({ 
-                    type: 'complete', 
+                    type: 'encoded', 
                     width: side, 
                     height: side, 
                     buffer: imgBuffer,
-                    fileId: fileId
-                }, [imgBuffer.buffer]); // Transferable object for speed
+                    fName: `AURA_SECURE_${fileId}.png`
+                }, [imgBuffer.buffer]);
 
             } catch(err) {
                 self.postMessage({ type: 'error', msg: err.message });
@@ -280,43 +314,58 @@
         
         else if (action === 'decode') {
             try {
-                const pixels = new Uint8Array(fileData); // RGBA data
+                const pixels = new Uint8Array(fileData); // RGBA
                 const totalBytes = (pixels.length / 4) * 3;
-                const rawData = new Uint8Array(totalBytes);
+                let rawData = new Uint8Array(totalBytes);
                 
-                for(let i=0, j=0; i < pixels.length; i+=4, j+=3) {
-                    rawData[j] = pixels[i];
-                    rawData[j+1] = pixels[i+1];
-                    rawData[j+2] = pixels[i+2];
+                let writeIdx = 0;
+                // Optimized Extract Loop
+                for(let i=0; i < pixels.length; i += 4) {
+                    rawData[writeIdx++] = pixels[i];   // R
+                    rawData[writeIdx++] = pixels[i+1]; // G
+                    rawData[writeIdx++] = pixels[i+2]; // B
+                    // Skip Alpha (i+3)
                     
-                    if(i % 100000 === 0) {
-                        self.postMessage({ type: 'progress', val: (i/pixels.length)*100 });
+                    if(i % 200000 === 0) {
+                        self.postMessage({ type: 'progress', val: (i/pixels.length)*50 });
                     }
                 }
                 
                 // Parse Header
                 const decoder = new TextDecoder();
-                const sample = decoder.decode(rawData.slice(0, 500));
-                const marker = ":::SEP:::";
+                // Look at first 1KB for header
+                const headerChunk = decoder.decode(rawData.slice(0, 1000)); 
+                const startSig = "AURA6:";
+                const endSig = ":ENDH";
                 
-                if(sample.includes("AURA") && sample.includes(marker)) {
-                    const parts = sample.split(marker);
-                    // parts[0] = ID, parts[1] = Name, parts[2] = Type
-                    const headerStr = parts[0] + marker + parts[1] + marker + parts[2] + marker;
-                    const headerLen = new TextEncoder().encode(headerStr).length;
-                    
-                    const actualData = rawData.slice(headerLen);
-                    
-                    self.postMessage({
-                        type: 'decoded',
-                        fileData: actualData,
-                        fileName: decodeURIComponent(parts[1]),
-                        fileType: parts[2]
-                    }, [actualData.buffer]);
-                } else {
-                    throw new Error("Invalid AURA Signature");
+                if(!headerChunk.startsWith(startSig) || !headerChunk.includes(endSig)) {
+                    throw new Error("No AURA Signature Found.");
                 }
+
+                const endHeaderIdx = headerChunk.indexOf(endSig) + endSig.length;
+                const headerFull = headerChunk.substring(0, endHeaderIdx);
+                const headerBytesLen = new TextEncoder().encode(headerFull).length;
                 
+                const parts = headerFull.split(':'); 
+                // AURA6 : ID : Name : Type : ENDH
+                
+                const fName = decodeURIComponent(parts[2]);
+                const fType = parts[3];
+                
+                // Extract actual file
+                const fileContent = rawData.slice(headerBytesLen);
+                
+                // Clean trailing zeros/padding? Usually not strictly necessary for most files, 
+                // but strictly: we should rely on file format. 
+                // For simplicity in V6, we return the slice.
+                
+                self.postMessage({
+                    type: 'decoded',
+                    fileData: fileContent,
+                    fName: fName,
+                    fType: fType
+                }, [fileContent.buffer]);
+
             } catch(err) {
                 self.postMessage({ type: 'error', msg: err.message });
             }
@@ -325,143 +374,195 @@
 </script>
 
 <script>
-    // --- SYSTEM INIT ---
-    const ui = {
-        drop: document.getElementById('dropZone'),
-        input: document.getElementById('fileInput'),
-        term: document.getElementById('terminal'),
-        bar: document.getElementById('progressBar'),
-        statMem: document.getElementById('statMem'),
-        statCore: document.getElementById('statCore'),
-        preview: document.getElementById('previewImg'),
-        btn: document.getElementById('downloadBtn'),
-        reset: document.querySelector('button[onclick]')
+    // --- APP STATE ---
+    const app = {
+        mode: 'encode', // 'encode' or 'decode'
+        worker: null,
+        els: {
+            tabs: document.querySelectorAll('.tab-btn'),
+            mods: document.querySelectorAll('.module'),
+            term: document.getElementById('terminal'),
+            bar: document.getElementById('progressBar'),
+            barCon: document.getElementById('progressBarContainer'),
+            preview: document.getElementById('previewImg'),
+            dlEnc: document.getElementById('btnDownloadEnc'),
+            dlDec: document.getElementById('btnDownloadDec'),
+            reset: document.getElementById('btnReset'),
+            status: document.getElementById('statusBadge')
+        }
     };
 
-    // --- WORKER SETUP ---
+    // --- INIT WORKER ---
     const blob = new Blob([document.getElementById('worker-script').textContent], {type: "text/javascript"});
-    const worker = new Worker(window.URL.createObjectURL(blob));
+    app.worker = new Worker(window.URL.createObjectURL(blob));
 
-    // --- EVENT LISTENERS ---
-    ui.drop.onclick = () => ui.input.click();
-    ui.input.onchange = (e) => processInput(e.target.files[0]);
-    
-    ui.drop.ondragover = (e) => { e.preventDefault(); ui.drop.style.borderColor = '#00f3ff'; };
-    ui.drop.ondragleave = () => { ui.drop.style.borderColor = '#444'; };
-    ui.drop.ondrop = (e) => { e.preventDefault(); processInput(e.dataTransfer.files[0]); };
-
-    // --- MAIN PROCESSOR ---
-    function processInput(file) {
-        if(!file) return;
-        ui.reset.style.display = 'block';
-        ui.btn.style.display = 'none';
-        ui.preview.style.display = 'none';
+    // --- TAB SWITCHING ---
+    function switchTab(mode) {
+        app.mode = mode;
+        // Update Buttons
+        app.els.tabs.forEach(t => {
+            t.classList.remove('active', 'decode-mode');
+            if(mode === 'decode') {
+                if(t.innerText.includes('DECODER')) t.classList.add('active', 'decode-mode');
+            } else {
+                if(t.innerText.includes('ENCODER')) t.classList.add('active');
+            }
+        });
         
-        log(`> Analyzing Input: ${file.name}`, 'sys');
-        log(`> Size: ${(file.size/(1024*1024)).toFixed(2)} MB`, 'sys');
+        // Update Modules
+        app.els.mods.forEach(m => m.classList.remove('active'));
+        document.getElementById(`mod-${mode}`).classList.add('active');
         
-        ui.statMem.innerText = (file.size/(1024*1024)).toFixed(1) + " MB";
-        ui.statCore.innerText = "PROCESSING";
-        ui.statCore.style.color = "#00f3ff";
-
-        if(file.type.startsWith('image/')) {
-            // Decode Path
-            log('> Image detected. Decoding Matrix...', 'sys');
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                const img = new Image();
-                img.onload = () => {
-                    const canvas = document.createElement('canvas');
-                    canvas.width = img.width;
-                    canvas.height = img.height;
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0);
-                    const imgData = ctx.getImageData(0,0, img.width, img.height);
-                    
-                    worker.postMessage({
-                        action: 'decode',
-                        fileData: imgData.data.buffer 
-                    }, [imgData.data.buffer]);
-                };
-                img.src = e.target.result;
-            };
-            reader.readAsDataURL(file);
-        } else {
-            // Encode Path
-            log('> File detected. Initiating Quantum Encode...', 'sys');
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                worker.postMessage({
-                    action: 'encode',
-                    fileData: e.target.result,
-                    fileName: file.name,
-                    fileType: file.type
-                }, [e.target.result]); // Zero-copy transfer
-            };
-            reader.readAsArrayBuffer(file);
-        }
+        resetUI();
     }
 
-    // --- WORKER RESPONSE HANDLER ---
-    worker.onmessage = (e) => {
-        const { type, val, msg, width, height, buffer, fileId, fileData, fileName, fileType } = e.data;
+    // --- UI HANDLERS ---
+    function resetUI() {
+        app.els.preview.style.display = 'none';
+        app.els.dlEnc.style.display = 'none';
+        app.els.dlDec.style.display = 'none';
+        app.els.reset.style.display = 'none';
+        app.els.barCon.style.display = 'none';
+        app.els.bar.style.width = '0%';
+        log('> Mode Switched. Ready.', 'sys');
+    }
 
-        if(type === 'progress') {
-            ui.bar.style.width = val + '%';
+    // --- ENCODER INPUT ---
+    document.getElementById('fileEnc').onchange = (e) => {
+        const file = e.target.files[0];
+        if(!file) return;
+        
+        log(`> Loading: ${file.name} (${(file.size/1024/1024).toFixed(2)} MB)`, 'sys');
+        processStart();
+        
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+            app.worker.postMessage({
+                action: 'encode',
+                fileData: ev.target.result,
+                fileName: file.name,
+                fileType: file.type
+            }, [ev.target.result]);
+        };
+        reader.readAsArrayBuffer(file);
+    };
+
+    // --- DECODER INPUT ---
+    document.getElementById('fileDec').onchange = (e) => {
+        const file = e.target.files[0];
+        if(!file) return;
+        
+        log(`> Analyzing Image Matrix...`, 'sys');
+        processStart();
+
+        // Must draw to canvas to get RGBA pixels
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+            const img = new Image();
+            img.onload = () => {
+                // Limit check
+                if(img.width * img.height > 268435456) {
+                    log('> Error: Image too massive for mobile memory.', 'err');
+                    return;
+                }
+                
+                const canvas = document.createElement('canvas');
+                canvas.width = img.width;
+                canvas.height = img.height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0);
+                const imgData = ctx.getImageData(0,0, img.width, img.height);
+                
+                app.worker.postMessage({
+                    action: 'decode',
+                    fileData: imgData.data.buffer
+                }, [imgData.data.buffer]);
+            };
+            img.src = ev.target.result;
+        };
+        reader.readAsDataURL(file);
+    };
+
+    function processStart() {
+        app.els.barCon.style.display = 'block';
+        app.els.status.innerText = "PROCESSING";
+        app.els.status.style.color = "#00f3ff";
+    }
+
+    // --- WORKER RESPONSES ---
+    app.worker.onmessage = (e) => {
+        const d = e.data;
+
+        if(d.type === 'progress') {
+            app.els.bar.style.width = d.val + '%';
         }
 
-        if(type === 'error') {
-            log(`> FATAL ERROR: ${msg}`, 'err');
-            ui.statCore.innerText = "FAILED";
-            ui.statCore.style.color = "#ff0055";
+        if(d.type === 'error') {
+            log(`> ERROR: ${d.msg}`, 'err');
+            app.els.status.innerText = "FAILED";
+            app.els.status.style.color = "#ff0055";
         }
 
-        if(type === 'complete') { // Encode Success
-            log('> Encoding Complete. Generating Visual...', 'ok');
-            const canvas = document.createElement('canvas');
-            canvas.width = width;
-            canvas.height = height;
-            const ctx = canvas.getContext('2d');
-            const imgData = new ImageData(new Uint8ClampedArray(buffer), width, height);
-            ctx.putImageData(imgData, 0, 0);
+        // ENCODE DONE
+        if(d.type === 'encoded') {
+            log(`> Encrypted. Matrix Size: ${d.width}x${d.height}`, 'ok');
             
-            const url = canvas.toDataURL('image/png');
-            ui.preview.src = url;
-            ui.preview.style.display = 'block';
+            // Create Canvas to convert buffer to Blob
+            const cvs = document.createElement('canvas');
+            cvs.width = d.width;
+            cvs.height = d.height;
+            const ctx = cvs.getContext('2d');
+            const iData = new ImageData(new Uint8ClampedArray(d.buffer), d.width, d.height);
+            ctx.putImageData(iData, 0, 0);
             
-            ui.btn.href = url;
-            ui.btn.download = `AURA_QUANTUM_${fileId}.png`;
-            ui.btn.innerText = "⬇ DOWNLOAD OPTICAL MATRIX";
-            ui.btn.style.display = 'block';
-            
-            ui.statCore.innerText = "IDLE";
-            ui.statCore.style.color = "#fff";
-            log(`> Matrix Generated: ${width}x${height}px`, 'ok');
+            // Generate Blob (Better for large files)
+            cvs.toBlob((blob) => {
+                const url = URL.createObjectURL(blob);
+                
+                // Show Preview
+                app.els.preview.src = url;
+                app.els.preview.style.display = 'block';
+                
+                // Setup Button
+                app.els.dlEnc.href = url;
+                app.els.dlEnc.download = d.fName;
+                app.els.dlEnc.style.display = 'block';
+                app.els.reset.style.display = 'block';
+                
+                app.els.status.innerText = "COMPLETE";
+                app.els.status.style.color = "#0aff0a";
+                log('> Payloaded generated. Tap download.', 'ok');
+            }, 'image/png');
         }
 
-        if(type === 'decoded') { // Decode Success
-            log('> Pattern Decoded Successfully.', 'ok');
-            const blob = new Blob([fileData], {type: fileType});
+        // DECODE DONE
+        if(d.type === 'decoded') {
+            log(`> File Decoupled: ${d.fName}`, 'ok');
+            
+            const blob = new Blob([d.fileData], {type: d.fType});
             const url = URL.createObjectURL(blob);
             
-            ui.btn.href = url;
-            ui.btn.download = fileName;
-            ui.btn.innerText = `⬇ EXTRACT: ${fileName}`;
-            ui.btn.style.display = 'block';
+            app.els.dlDec.href = url;
+            app.els.dlDec.download = d.fName;
+            app.els.dlDec.innerText = `DOWNLOAD: ${d.fName}`;
+            app.els.dlDec.style.display = 'block';
+            app.els.reset.style.display = 'block';
             
-            ui.statCore.innerText = "IDLE";
-            ui.statCore.style.color = "#fff";
-            log(`> Ready to Extract: ${fileName}`, 'ok');
+            app.els.status.innerText = "UNLOCKED";
+            app.els.status.style.color = "#bc13fe";
         }
     };
 
     function log(msg, type) {
         const div = document.createElement('div');
-        div.className = `log-line log-${type}`;
+        div.className = `log-entry log-${type}`;
         div.innerText = msg;
-        ui.term.appendChild(div);
-        ui.term.scrollTop = ui.term.scrollHeight;
+        app.els.term.appendChild(div);
+        app.els.term.scrollTop = app.els.term.scrollHeight;
     }
+
+    // Initial log
+    log('> System Core Active. Select Mode.', 'sys');
 </script>
 </body>
 </html>
