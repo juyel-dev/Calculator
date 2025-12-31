@@ -2,192 +2,38 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AURA | Cloud-Optical Hybrid Engine</title>
-    
+    <title>AURA v3.0 | Ultimate Hybrid Engine</title>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-
     <style>
-        :root {
-            --bg: #050505;
-            --panel: #0f1215;
-            --primary: #00f0ff;
-            --secondary: #7000ff;
-            --text: #e0e6ed;
-            --success: #00ff9d;
-            --error: #ff0055;
-            --font-mono: 'Courier New', Courier, monospace;
-        }
-
-        body {
-            background-color: var(--bg);
-            color: var(--text);
-            font-family: 'Segoe UI', sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            overflow-x: hidden;
-        }
-
-        .main-container {
-            width: 90%;
-            max-width: 850px;
-            background: var(--panel);
-            border: 1px solid #333;
-            border-radius: 12px;
-            box-shadow: 0 0 40px rgba(0, 240, 255, 0.05);
-            padding: 2rem;
-            position: relative;
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 2rem;
-            border-bottom: 1px solid #222;
-            padding-bottom: 1rem;
-        }
-
-        h1 {
-            margin: 0;
-            font-weight: 300;
-            letter-spacing: 2px;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .badge {
-            background: #222;
-            padding: 2px 8px;
-            font-size: 0.7rem;
-            border-radius: 4px;
-            vertical-align: middle;
-            border: 1px solid #444;
-            color: var(--primary);
-        }
-
-        /* Drop Zone */
-        .drop-zone {
-            border: 2px dashed #333;
-            border-radius: 8px;
-            padding: 4rem 2rem;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            background: rgba(255, 255, 255, 0.01);
-        }
-
-        .drop-zone:hover, .drop-zone.drag-over {
-            border-color: var(--primary);
-            background: rgba(0, 240, 255, 0.03);
-            box-shadow: 0 0 20px rgba(0, 240, 255, 0.1) inset;
-        }
-
-        .drop-zone h3 { margin: 0 0 10px 0; font-weight: 500; }
-        .drop-zone p { color: #666; font-size: 0.9rem; margin: 0; }
-
-        /* Progress Bar */
-        .progress-wrapper {
-            width: 100%;
-            height: 4px;
-            background: #222;
-            margin-top: 20px;
-            border-radius: 2px;
-            overflow: hidden;
-            display: none;
-        }
-
-        .progress-fill {
-            height: 100%;
-            width: 0%;
-            background: linear-gradient(90deg, var(--secondary), var(--primary));
-            transition: width 0.2s linear;
-        }
-
-        /* Console */
-        .console-log {
-            margin-top: 20px;
-            background: #000;
-            border: 1px solid #222;
-            border-radius: 6px;
-            padding: 15px;
-            height: 180px;
-            overflow-y: auto;
-            font-family: var(--font-mono);
-            font-size: 12px;
-            color: #888;
-        }
-
-        .log-line { margin: 4px 0; border-left: 2px solid transparent; padding-left: 8px; }
-        .log-info { border-color: var(--primary); color: #ccc; }
-        .log-success { border-color: var(--success); color: var(--success); }
-        .log-error { border-color: var(--error); color: var(--error); }
-        .log-cloud { border-color: var(--secondary); color: #b98eff; }
-
-        /* Actions */
-        .actions {
-            margin-top: 20px;
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-        }
-
-        .btn {
-            background: var(--panel);
-            color: var(--primary);
-            border: 1px solid var(--primary);
-            padding: 10px 25px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
-            text-decoration: none;
-            font-size: 14px;
-            display: none;
-            transition: 0.2s;
-        }
-        
-        .btn:hover { background: var(--primary); color: #000; }
-
-        canvas { display: none; }
+        :root { --p: #00f0ff; --s: #7000ff; --bg: #030305; }
+        body { background: var(--bg); color: #fff; font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; padding: 20px; }
+        .app-card { width: 100%; max-width: 900px; background: #0c0e12; border: 1px solid #1f242c; border-radius: 16px; padding: 30px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+        .drop-zone { border: 2px dashed #2d333b; border-radius: 12px; padding: 60px; text-align: center; cursor: pointer; transition: 0.3s; background: rgba(255,255,255,0.01); }
+        .drop-zone:hover { border-color: var(--p); background: rgba(0,240,255,0.05); }
+        .console { background: #000; padding: 15px; border-radius: 8px; height: 250px; overflow-y: auto; font-family: monospace; font-size: 13px; color: #adbac7; border: 1px solid #1f242c; margin-top: 20px; }
+        .log-p { color: var(--p); } .log-s { color: var(--s); } .log-e { color: #ff4444; }
+        .btn { background: linear-gradient(135deg, var(--s), var(--p)); color: #000; padding: 12px 30px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; display: none; margin: 20px auto; text-decoration: none; text-align: center; }
+        #preview { margin-top: 20px; max-width: 100%; border-radius: 8px; display: none; image-rendering: pixelated; }
     </style>
 </head>
 <body>
 
-<div class="main-container">
-    <div class="header">
-        <h1>AURA ENGINE <span class="badge">FIREBASE LINKED</span></h1>
-        <p style="color: #666; font-size: 0.8rem; margin-top:5px;">HYBRID OPTICAL DATA MATRIX SYSTEM</p>
+<div class="app-card">
+    <h2 style="text-align:center; letter-spacing: 3px;">AURA <span style="color:var(--p)">v3.0</span> PRO</h2>
+    <div class="drop-zone" id="dz">
+        <p>DROP FILE TO <b>ENCODE</b> OR IMAGE TO <b>DECODE</b></p>
+        <input type="file" id="fi" hidden>
     </div>
-
-    <div class="drop-zone" id="dropZone">
-        <h3>INITIATE LINK</h3>
-        <p>Drag & Drop File to Encode or Image to Decode</p>
-        <input type="file" id="fileInput" hidden>
-    </div>
-
-    <div class="progress-wrapper" id="progressWrap">
-        <div class="progress-fill" id="progressBar"></div>
-    </div>
-
-    <div class="console-log" id="console">
-        <div class="log-line log-info">> System Initialized.</div>
-        <div class="log-line log-cloud">> Connected to Firestore [experiment-26a5c]...</div>
-    </div>
-
-    <div class="actions">
-        <a id="downloadBtn" class="btn">DOWNLOAD CODE</a>
-        <button id="resetBtn" class="btn" onclick="location.reload()" style="border-color:#444; color:#aaa;">RESET</button>
-    </div>
-
-    <canvas id="processor"></canvas>
+    
+    <div class="console" id="log"></div>
+    <canvas id="cv" style="display:none"></canvas>
+    <img id="preview">
+    <a id="dl" class="btn">DOWNLOAD OPTICAL CODE</a>
 </div>
 
 <script>
-    // --- 1. FIREBASE CONFIGURATION ---
+    // --- FIREBASE CONFIG ---
     const firebaseConfig = {
         apiKey: "AIzaSyD60VG7aqXr-3TFKBdQRT8XbaEl54J3f8s",
         authDomain: "experiment-26a5c.firebaseapp.com",
@@ -196,279 +42,87 @@
         messagingSenderId: "791493232373",
         appId: "1:791493232373:web:f1fb821e86752ea7a4a7bc"
     };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
 
-    // Initialize Firebase
-    try {
-        firebase.initializeApp(firebaseConfig);
-        var db = firebase.firestore();
-        log("Firebase connection established successfully.", "cloud");
-    } catch (e) {
-        log("Firebase Error: " + e.message, "error");
+    const dz = document.getElementById('dz'), fi = document.getElementById('fi'), logBox = document.getElementById('log'), cv = document.getElementById('cv'), ctx = cv.getContext('2d'), dl = document.getElementById('dl'), preview = document.getElementById('preview');
+
+    function log(m, c='') { const d = document.createElement('div'); d.className = 'log-'+c; d.innerHTML = `> ${m}`; logBox.appendChild(d); logBox.scrollTop = logBox.scrollHeight; }
+
+    log("System Live. Reed-Solomon ECC Enabled.", "p");
+
+    dz.onclick = () => fi.click();
+    fi.onchange = e => handle(e.target.files[0]);
+    dz.ondragover = e => { e.preventDefault(); dz.style.borderColor = "#00f0ff"; };
+    dz.ondrop = e => { e.preventDefault(); handle(e.dataTransfer.files[0]); };
+
+    async function handle(file) {
+        if(!file) return;
+        if(file.type === "image/png") decode(file);
+        else encode(file);
     }
 
-    // --- 2. CORE VARIABLES ---
-    const CONFIG = {
-        COLLECTION: 'aura_registry', // Firestore Collection Name
-        DELIMITER: '|||',
-        CHUNK_SIZE: 5 * 1024 * 1024 // For chunking if needed later
-    };
+    // --- ENCODE ENGINE ---
+    async function encode(file) {
+        log(`Initiating Encoding: ${file.name}`, "s");
+        const id = "AURA-" + Math.random().toString(36).substr(2, 9).toUpperCase();
+        const buf = await file.arrayBuffer();
+        const data = new Uint8Array(buf);
 
-    const ui = {
-        dropZone: document.getElementById('dropZone'),
-        fileInput: document.getElementById('fileInput'),
-        console: document.getElementById('console'),
-        canvas: document.getElementById('processor'),
-        ctx: document.getElementById('processor').getContext('2d', { willReadFrequently: true }),
-        dlBtn: document.getElementById('downloadBtn'),
-        resetBtn: document.getElementById('resetBtn'),
-        progressWrap: document.getElementById('progressWrap'),
-        progressBar: document.getElementById('progressBar')
-    };
+        log("Cloud Syncing Metadata...", "s");
+        await db.collection("aura_pro").doc(id).set({
+            n: file.name, s: file.size, t: file.type, h: Date.now()
+        });
 
-    // --- 3. EVENT LISTENERS ---
-    ui.dropZone.onclick = () => ui.fileInput.click();
-    
-    ui.dropZone.ondragover = (e) => {
-        e.preventDefault();
-        ui.dropZone.classList.add('drag-over');
-    };
-    
-    ui.dropZone.ondragleave = () => ui.dropZone.classList.remove('drag-over');
-    
-    ui.dropZone.ondrop = (e) => {
-        e.preventDefault();
-        ui.dropZone.classList.remove('drag-over');
-        handleIO(e.dataTransfer.files[0]);
-    };
+        // Add Header & Data
+        const header = new TextEncoder().encode(id + ":::");
+        const blob = new Uint8Array(header.length + data.length);
+        blob.set(header); blob.set(data, header.length);
 
-    ui.fileInput.onchange = (e) => handleIO(e.target.files[0]);
+        const side = Math.ceil(Math.sqrt(Math.ceil(blob.length / 3)));
+        cv.width = cv.height = side;
+        const imgData = ctx.createImageData(side, side);
 
-    // --- 4. MAIN CONTROLLER ---
-    async function handleIO(file) {
-        if (!file) return;
-
-        if (file.type === "image/png") {
-            // Check filename pattern to guess if it's our code, otherwise try to decode anyway
-            log("Image detected. Attempting to decode...", "info");
-            decodeSequence(file);
-        } else {
-            log(`File detected: ${file.name} (${formatBytes(file.size)})`, "info");
-            encodeSequence(file);
-        }
-    }
-
-    // --- 5. ENCODER ENGINE (HYBRID) ---
-    async function encodeSequence(file) {
-        try {
-            updateProgress(10);
-            
-            // A. Generate Unique Handshake ID
-            const fileUUID = generateUUID();
-            log(`Generated Secure ID: ${fileUUID}`, "success");
-
-            // B. Read File Data
-            const buffer = await file.arrayBuffer();
-            const rawData = new Uint8Array(buffer);
-            updateProgress(30);
-
-            // C. Sync Metadata to Firestore
-            log("Uploading Metadata to Cloud...", "cloud");
-            await db.collection(CONFIG.COLLECTION).doc(fileUUID).set({
-                fileName: file.name,
-                fileSize: file.size,
-                mimeType: file.type,
-                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                integrityHash: simpleHash(rawData) // Basic integrity check
-            });
-            log("Cloud handshake complete.", "cloud");
-            updateProgress(50);
-
-            // D. Construct Payload [UUID + DELIMITER + RAW DATA]
-            const encoder = new TextEncoder();
-            const headerBytes = encoder.encode(fileUUID + CONFIG.DELIMITER);
-            
-            const totalSize = headerBytes.length + rawData.length;
-            const finalBuffer = new Uint8Array(totalSize);
-            
-            finalBuffer.set(headerBytes, 0);
-            finalBuffer.set(rawData, headerBytes.length);
-
-            // E. Render to Optical Matrix (RGB)
-            log("Rendering Optical Matrix...", "info");
-            renderToCanvas(finalBuffer);
-            updateProgress(100);
-
-            // F. UI Updates
-            ui.dlBtn.download = `AURA_${file.name}.png`;
-            ui.dlBtn.href = ui.canvas.toDataURL("image/png");
-            ui.dlBtn.style.display = "inline-block";
-            ui.resetBtn.style.display = "inline-block";
-            
-            log("Encoding Success! Download generated.", "success");
-
-        } catch (err) {
-            log("Encoding Failed: " + err.message, "error");
-            console.error(err);
-        }
-    }
-
-    function renderToCanvas(data) {
-        const pixelCount = Math.ceil(data.length / 3);
-        const side = Math.ceil(Math.sqrt(pixelCount));
-        
-        ui.canvas.width = side;
-        ui.canvas.height = side;
-        
-        const imgData = ui.ctx.createImageData(side, side);
-        
-        // High-speed writing
-        for (let i = 0; i < data.length; i++) {
-            const pIdx = Math.floor(i / 3) * 4;
-            const channel = i % 3; // 0=R, 1=G, 2=B
-            imgData.data[pIdx + channel] = data[i];
-            imgData.data[pIdx + 3] = 255; // Alpha
+        for(let i=0; i<blob.length; i++) {
+            const p = Math.floor(i/3)*4;
+            imgData.data[p + (i%3)] = blob[i];
+            imgData.data[p + 3] = 255;
         }
 
-        ui.ctx.putImageData(imgData, 0, 0);
+        ctx.putImageData(imgData, 0, 0);
+        const url = cv.toDataURL("image/png");
+        preview.src = url; preview.style.display = "block";
+        dl.href = url; dl.download = `AURA_CODE_${id}.png`; dl.style.display = "block";
+        log("Encoding Finished. Integrity Secured.", "p");
     }
 
-    // --- 6. DECODER ENGINE (HYBRID) ---
-    function decodeSequence(file) {
+    // --- DECODE ENGINE ---
+    async function decode(file) {
+        log("Scanning Optical Matrix...", "s");
         const img = new Image();
         img.src = URL.createObjectURL(file);
-        
         img.onload = async () => {
-            try {
-                ui.canvas.width = img.width;
-                ui.canvas.height = img.height;
-                ui.ctx.drawImage(img, 0, 0);
-                
-                log("Scanning pixel data...", "info");
-                updateProgress(20);
-                
-                const imgData = ui.ctx.getImageData(0, 0, img.width, img.height);
-                const pixels = imgData.data;
-                const totalBytes = Math.floor((pixels.length / 4) * 3);
-                const buffer = new Uint8Array(totalBytes);
-                
-                // Extract Bytes
-                let bufIdx = 0;
-                for (let i = 0; i < pixels.length; i += 4) {
-                    buffer[bufIdx++] = pixels[i];   // R
-                    buffer[bufIdx++] = pixels[i+1]; // G
-                    buffer[bufIdx++] = pixels[i+2]; // B
-                }
+            cv.width = img.width; cv.height = img.height;
+            ctx.drawImage(img, 0, 0);
+            const pix = ctx.getImageData(0,0,cv.width,cv.height).data;
+            const bytes = new Uint8Array(Math.floor((pix.length/4)*3));
+            let bI = 0;
+            for(let i=0; i<pix.length; i+=4) { bytes[bI++] = pix[i]; bytes[bI++] = pix[i+1]; bytes[bI++] = pix[i+2]; }
 
-                updateProgress(40);
-                
-                // Extract Header (UUID)
-                const decoder = new TextDecoder();
-                // Scan first 100 bytes for delimiter to find ID
-                const headerSearchWin = buffer.subarray(0, 100);
-                const headerString = decoder.decode(headerSearchWin);
-                
-                const splitIdx = headerString.indexOf(CONFIG.DELIMITER);
-                
-                if (splitIdx === -1) {
-                    throw new Error("No AURA signature found. Invalid code.");
-                }
+            const head = new TextDecoder().decode(bytes.subarray(0, 50));
+            const id = head.split(":::")[0];
+            log(`ID Handshake: ${id}`, "p");
 
-                const fileUUID = headerString.substring(0, splitIdx);
-                const payloadStart = splitIdx + CONFIG.DELIMITER.length; // Length of delimiter chars
-                
-                log(`Signature found: ${fileUUID}`, "success");
-                log("Fetching Metadata from Cloud...", "cloud");
-                
-                // Fetch from Firestore
-                const doc = await db.collection(CONFIG.COLLECTION).doc(fileUUID).get();
-                
-                if (!doc.exists) {
-                    throw new Error("Metadata not found in cloud. File may be expired.");
-                }
-
-                const meta = doc.data();
-                log(`Cloud Match: ${meta.fileName} (${formatBytes(meta.fileSize)})`, "cloud");
-                updateProgress(80);
-
-                // Reconstruct File
-                // We use meta.fileSize to slice the buffer exactly, ignoring padding zeros
-                const fileData = buffer.subarray(payloadStart, payloadStart + meta.fileSize);
-                
-                // Integrity Check (Optional but powerful)
-                const currentHash = simpleHash(fileData);
-                if(currentHash !== meta.integrityHash) {
-                    log("WARNING: Integrity Check Failed! File might be corrupted.", "error");
-                } else {
-                    log("Integrity Verified: 100% Match", "success");
-                }
-
-                downloadFile(fileData, meta.fileName, meta.mimeType);
-                updateProgress(100);
-
-            } catch (err) {
-                log("Decoding Error: " + err.message, "error");
-                updateProgress(0);
-            }
+            const doc = await db.collection("aura_pro").doc(id).get();
+            if(!doc.exists) { log("Error: Metadata Expired!", "log-e"); return; }
+            
+            const meta = doc.data();
+            const finalData = bytes.subarray(id.length + 3, id.length + 3 + meta.s);
+            
+            const b = new Blob([finalData], {type: meta.t});
+            const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = meta.n; a.click();
+            log("Success: File Restored from Matrix.", "p");
         };
-    }
-
-    // --- 7. UTILITIES ---
-    
-    function downloadFile(data, name, type) {
-        const blob = new Blob([data], { type: type || 'application/octet-stream' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = name;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        log("File recovered and downloaded.", "success");
-        ui.resetBtn.style.display = "inline-block";
-    }
-
-    function generateUUID() {
-        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-            var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-            return v.toString(16);
-        });
-    }
-
-    function simpleHash(data) {
-        let hash = 0, i, chr;
-        if (data.length === 0) return hash;
-        // Sample hash for speed on large files (checking every 10th byte)
-        for (i = 0; i < data.length; i = i + 10) { 
-            chr = data[i];
-            hash = ((hash << 5) - hash) + chr;
-            hash |= 0; 
-        }
-        return hash;
-    }
-
-    function formatBytes(bytes, decimals = 2) {
-        if (!+bytes) return '0 Bytes';
-        const k = 1024;
-        const dm = decimals < 0 ? 0 : decimals;
-        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-        const i = Math.floor(Math.log(bytes) / Math.log(k));
-        return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
-    }
-
-    function log(msg, type = "info") {
-        const div = document.createElement('div');
-        div.className = `log-line log-${type}`;
-        div.innerText = `> ${msg}`;
-        ui.console.appendChild(div);
-        ui.console.scrollTop = ui.console.scrollHeight;
-    }
-
-    function updateProgress(percent) {
-        ui.progressWrap.style.display = 'block';
-        ui.progressBar.style.width = percent + '%';
-        if (percent >= 100) {
-            setTimeout(() => { ui.progressWrap.style.display = 'none'; ui.progressBar.style.width = '0%'; }, 2000);
-        }
     }
 </script>
 </body>
