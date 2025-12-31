@@ -31,296 +31,191 @@
             overflow-x: hidden;
         }
 
+        /* Glassmorphism Container */
         .container {
             width: 90%;
             max-width: 900px;
-            background: var(--panel);
+            background: rgba(15, 17, 21, 0.95);
             border: 1px solid var(--border);
             border-radius: 20px;
             padding: 2.5rem;
             box-shadow: 0 0 60px rgba(0, 243, 255, 0.08);
             text-align: center;
             position: relative;
+            backdrop-filter: blur(10px);
         }
 
-        .glow {
+        /* Glowing Border Animation */
+        .container::before {
+            content: '';
             position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
-            background: linear-gradient(45deg, var(--primary), var(--secondary), var(--accent));
-            border-radius: 22px;
+            top: -2px; left: -2px; right: -2px; bottom: -2px;
+            background: linear-gradient(45deg, var(--primary), var(--secondary), var(--bg));
             z-index: -1;
-            opacity: 0;
-            transition: opacity 0.3s ease;
+            border-radius: 22px;
+            opacity: 0.3;
+            animation: borderGlow 6s linear infinite;
         }
 
-        .container:hover .glow { opacity: 0.1; }
+        @keyframes borderGlow {
+            0% { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(360deg); }
+        }
 
         h1 {
-            margin: 0 0 0.5rem;
+            margin: 0;
             font-weight: 300;
             letter-spacing: 5px;
-            background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
+            background: linear-gradient(90deg, var(--primary), #fff, var(--secondary));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            font-size: 2.2rem;
-        }
-
-        .subtitle {
-            color: #888;
-            font-size: 0.95rem;
-            margin-bottom: 2rem;
-            letter-spacing: 1px;
+            font-size: 2.5rem;
+            text-transform: uppercase;
         }
 
         .badge {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: #000;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: bold;
-            box-shadow: 0 4px 15px rgba(0, 243, 255, 0.3);
-            vertical-align: middle;
+            background: var(--secondary);
+            color: #fff;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.6rem;
+            vertical-align: super;
+            letter-spacing: 1px;
         }
 
-        /* Drop Zone */
+        .subtitle {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
+            letter-spacing: 2px;
+        }
+
+        /* Advanced Drop Zone */
         .drop-zone {
-            margin-top: 20px;
-            border: 2px dashed var(--border);
+            border: 2px dashed #333;
             border-radius: 16px;
-            padding: 70px 30px;
+            padding: 60px 20px;
             cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            background: rgba(255, 255, 255, 0.02);
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.01);
             position: relative;
             overflow: hidden;
         }
 
-        .drop-zone::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(0, 243, 255, 0.1), transparent);
-            transition: left 0.5s;
-        }
-
-        .drop-zone:hover::before { left: 100%; }
-
-        .drop-zone:hover {
+        .drop-zone:hover, .drop-zone.dragover {
             border-color: var(--primary);
-            background: rgba(0, 243, 255, 0.08);
-            box-shadow: inset 0 0 30px rgba(0, 243, 255, 0.15), 0 0 20px rgba(0, 243, 255, 0.1);
+            background: rgba(0, 243, 255, 0.05);
+            box-shadow: inset 0 0 20px rgba(0, 243, 255, 0.1);
         }
 
-        .drop-zone.dragover {
-            border-color: var(--secondary);
-            background: rgba(188, 19, 254, 0.08);
-            transform: scale(1.02);
+        .drop-zone p {
+            color: #888;
+            font-size: 1.1rem;
+            margin: 10px 0 0;
         }
 
-        .drop-zone p { 
-            color: #888; 
-            font-size: 1.2rem; 
-            margin: 0;
-            line-height: 1.6;
-        }
-        
-        .drop-icon { font-size: 3rem; margin-bottom: 1rem; opacity: 0.7; }
-        
-        /* Preview */
+        .icon { font-size: 3rem; opacity: 0.8; }
+
+        /* Preview Image */
         #preview {
             max-width: 100%;
-            max-height: 400px;
+            max-height: 350px;
             border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0, 243, 255, 0.2);
-            margin-top: 20px;
+            margin-top: 25px;
             display: none;
+            border: 1px solid var(--border);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
-        
-        /* Console Log */
+
+        /* Terminal Console */
         .console {
             margin-top: 25px;
             background: #000;
             border: 1px solid #222;
-            border-radius: 12px;
-            height: 220px;
+            border-radius: 8px;
+            height: 200px;
             overflow-y: auto;
             text-align: left;
-            padding: 20px;
+            padding: 15px;
             font-family: 'Courier New', monospace;
-            font-size: 0.9rem;
-            color: #aaa;
-            position: relative;
+            font-size: 0.85rem;
+            box-shadow: inset 0 0 10px #000;
         }
 
-        .console::-webkit-scrollbar {
-            width: 6px;
-        }
+        .log-entry { margin-bottom: 5px; padding-left: 10px; border-left: 2px solid #333; }
+        .log-info { color: #888; border-color: #888; }
+        .log-success { color: var(--primary); border-color: var(--primary); }
+        .log-error { color: var(--accent); border-color: var(--accent); }
+        .log-cloud { color: var(--secondary); border-color: var(--secondary); }
+        .log-warn { color: #ffcc00; border-color: #ffcc00; }
 
-        .console::-webkit-scrollbar-track {
-            background: #111;
-        }
-
-        .console::-webkit-scrollbar-thumb {
-            background: var(--primary);
-            border-radius: 3px;
-        }
-        
-        .log-entry { 
-            margin-bottom: 8px; 
-            border-left: 4px solid transparent; 
-            padding-left: 12px; 
-            animation: fadeIn 0.3s ease;
-            word-break: break-all;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateX(-10px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-
-        .log-info { border-color: #555; }
-        .log-success { border-color: var(--primary); color: var(--primary); }
-        .log-error { border-color: #ff3355; color: #ff3355; }
-        .log-cloud { border-color: var(--secondary); color: var(--secondary); }
-        .log-warning { border-color: var(--accent); color: var(--accent); }
-
-        /* Buttons & Loader */
-        .btn-group { 
-            margin-top: 25px; 
-            display: flex; 
-            justify-content: center; 
-            gap: 20px; 
-            flex-wrap: wrap;
-        }
+        /* Controls */
+        .btn-group { margin-top: 25px; display: flex; gap: 15px; justify-content: center; }
         
         .btn {
-            padding: 14px 35px;
+            padding: 12px 30px;
             border: none;
-            border-radius: 8px;
-            font-weight: bold;
+            border-radius: 6px;
+            font-weight: 600;
             cursor: pointer;
             text-decoration: none;
-            display: none;
-            transition: all 0.3s ease;
-            font-size: 0.95rem;
-            position: relative;
-            overflow: hidden;
+            font-size: 0.9rem;
+            transition: 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: none; /* Hidden by default */
         }
 
-        .btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transition: left 0.5s;
+        .btn-download {
+            background: var(--primary);
+            color: #000;
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.3);
         }
+        .btn-download:hover { background: #fff; box-shadow: 0 0 25px rgba(0, 243, 255, 0.6); }
 
-        .btn:hover::before { left: 100%; }
+        .btn-reset {
+            background: #222;
+            color: #fff;
+            display: inline-block;
+        }
+        .btn-reset:hover { background: #333; }
 
-        .btn-download { 
-            background: linear-gradient(135deg, var(--primary), var(--secondary)); 
-            color: #000; 
-            box-shadow: 0 0 20px rgba(0,243,255,0.4); 
-        }
-        
-        .btn-download:hover { 
-            transform: translateY(-2px);
-            box-shadow: 0 5px 25px rgba(0,243,255,0.6);
-        }
-        
-        .btn-reset { 
-            background: #222; 
-            color: #fff; 
-            border: 1px solid #444; 
-            display: inline-block; 
-        }
-        .btn-reset:hover { 
-            background: #333; 
-            border-color: var(--primary);
-            transform: translateY(-1px);
-        }
-
+        /* Loader */
         .loader {
-            width: 100%; 
-            height: 5px; 
-            background: #222; 
+            height: 3px;
+            width: 0%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
             margin-top: 20px;
-            border-radius: 3px; 
-            overflow: hidden; 
-            display: none;
-        }
-        .loader-bar { 
-            height: 100%; 
-            background: linear-gradient(90deg, var(--secondary), var(--primary), var(--accent)); 
-            width: 0%; 
-            transition: width 0.4s ease;
-            position: relative;
-        }
-
-        .loader-bar::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 20px;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-            animation: shimmer 1.5s infinite;
-        }
-
-        @keyframes shimmer {
-            0% { transform: translateX(-20px); }
-            100% { transform: translateX(100%); }
+            transition: width 0.2s;
+            box-shadow: 0 0 10px var(--primary);
         }
 
         canvas { display: none; }
-        
-        .warning {
-            background: rgba(255, 107, 53, 0.1);
-            border: 1px solid var(--accent);
-            border-radius: 8px;
-            padding: 10px;
-            margin-top: 15px;
-            color: var(--accent);
-            font-size: 0.9rem;
-        }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="glow"></div>
-    <h1>AURA <span class="badge">v4.0 UPGRADED</span></h1>
-    <p class="subtitle">Advanced Hybrid Optical Data Matrix | Firestore Synced | Robust Fallbacks</p>
+    <h1>AURA <span class="badge">v4.0</span></h1>
+    <p class="subtitle">Secure Optical Data Matrix & Cloud Sync</p>
 
     <div class="drop-zone" id="dropZone">
-        <div class="drop-icon">📁</div>
-        <p>Drag & Drop File to Encode<br><span style="font-size:0.9rem; opacity:0.8;">🖼️ Drop Image to Decode (Fallback to Encode if Invalid)</span></p>
-        <input type="file" id="fileInput" hidden accept="*/*">
+        <div class="icon">📂</div>
+        <p>Drag & Drop any File<br><span style="font-size:0.8rem; opacity:0.6;">(Images will be auto-scanned. If no code found, they will be encoded)</span></p>
+        <input type="file" id="fileInput" hidden>
     </div>
 
-    <div class="loader" id="loader"><div class="loader-bar" id="loaderBar"></div></div>
-    <div id="warning" class="warning" style="display:none;"></div>
-
-    <img id="preview" alt="Encoded/Decoded Preview">
+    <div class="loader" id="loader"></div>
+    
+    <img id="preview" alt="Preview">
 
     <div class="console" id="consoleLog">
-        <div class="log-entry log-info">> AURA v4.0 Initialized - Ready for Optical Processing...</div>
+        <div class="log-entry log-info">> System Initialized. Waiting for input...</div>
     </div>
 
     <div class="btn-group">
-        <a id="downloadBtn" class="btn btn-download">⬇ DOWNLOAD OPTICAL CODE</a>
-        <button class="btn btn-reset" onclick="location.reload()">↻ RESET SESSION</button>
+        <a id="downloadBtn" class="btn btn-download">⬇ DOWNLOAD RESULT</a>
+        <button class="btn btn-reset" onclick="location.reload()">↻ RESET</button>
     </div>
 
     <canvas id="processor"></canvas>
@@ -328,12 +223,11 @@
 
 <script>
     /**
-     * AURA v4.0 - Fully Polished & Upgraded
-     * Upgrades: Robust Header Detection, Image Fallback, Alpha Fix, UI Enhancements, File Size Limits, Latest Firebase
-     * Features: Auto-Preview, Shimmer Effects, Better Error Handling, Max Canvas Size Check
+     * AURA v4.0 - Hybrid Optical Engine
+     * Upgrades: Auto-Detection Fallback, Alpha Channel Fix, Size Limit, Improved UI
      */
 
-    // --- 1. FIREBASE CONFIGURATION (Updated to v10.12.2) ---
+    // --- CONFIGURATION ---
     const firebaseConfig = {
         apiKey: "AIzaSyD60VG7aqXr-3TFKBdQRT8XbaEl54J3f8s",
         authDomain: "experiment-26a5c.firebaseapp.com",
@@ -343,35 +237,32 @@
         appId: "1:791493232373:web:f1fb821e86752ea7a4a7bc"
     };
 
-    // Init Firebase with Enhanced Error Handling
+    // --- INIT ---
     let db;
     try {
         firebase.initializeApp(firebaseConfig);
         db = firebase.firestore();
-        log("✓ Firebase Cloud Sync Established.", "cloud");
+        log("✓ Cloud Sync: Online (Firebase Connected)", "cloud");
     } catch (e) {
-        log("✗ Firebase Initialization Failed: " + e.message + " (Offline Mode Enabled)", "error");
-        db = null; // Fallback to local-only
+        log("⚠ Cloud Sync: Offline (Local Mode Only)", "warn");
+        db = null;
     }
 
-    // --- 2. DOM ELEMENTS ---
     const ui = {
         dropZone: document.getElementById('dropZone'),
         fileInput: document.getElementById('fileInput'),
         console: document.getElementById('consoleLog'),
         canvas: document.getElementById('processor'),
-        ctx: document.getElementById('processor').getContext('2d', { willReadFrequently: true, alpha: true }), // Fixed: Alpha enabled
+        ctx: document.getElementById('processor').getContext('2d', { willReadFrequently: true }),
         dlBtn: document.getElementById('downloadBtn'),
         loader: document.getElementById('loader'),
-        loaderBar: document.getElementById('loaderBar'),
-        preview: document.getElementById('preview'),
-        warning: document.getElementById('warning')
+        preview: document.getElementById('preview')
     };
 
-    // --- 3. EVENT HANDLERS (Polished Drag States) ---
+    // --- EVENT LISTENERS ---
     ui.dropZone.onclick = () => ui.fileInput.click();
-    ui.fileInput.onchange = (e) => processFile(e.target.files[0]);
-
+    ui.fileInput.onchange = (e) => handleFile(e.target.files[0]);
+    
     ui.dropZone.ondragover = (e) => {
         e.preventDefault();
         ui.dropZone.classList.add('dragover');
@@ -380,282 +271,202 @@
     ui.dropZone.ondrop = (e) => {
         e.preventDefault();
         ui.dropZone.classList.remove('dragover');
-        processFile(e.dataTransfer.files[0]);
+        handleFile(e.dataTransfer.files[0]);
     };
 
-    // --- 4. MAIN PROCESSOR (Upgraded with Fallback Logic) ---
-    async function processFile(file) {
+    // --- MAIN LOGIC ---
+    async function handleFile(file) {
         if (!file) return;
-        clearUI();
-        
-        const maxSize = 5 * 1024 * 1024; // 5MB limit
-        if (file.size > maxSize) {
-            log("⚠ File too large (>5MB). Optical encoding limited for performance.", "warning");
-            showWarning("File exceeds 5MB limit. Please use smaller files.");
+        resetUI();
+
+        // Size Check (5MB Limit for browser safety)
+        if (file.size > 5 * 1024 * 1024) {
+            log("⚠ Error: File too large (>5MB). Browser may freeze.", "error");
             return;
         }
 
-        log(`Processing: \( {file.name} ( \){(file.size / 1024).toFixed(1)} KB)`, "info");
+        log(`Processing: ${file.name} (${(file.size/1024).toFixed(1)} KB)`, "info");
 
+        // Smart Detection
         if (file.type.startsWith("image/")) {
-            log("Image detected. Attempting AURA decode...", "info");
-            await decode(file);
+            log("Image detected. Attempting to decode...", "info");
+            await tryDecode(file);
         } else {
-            log("File detected. Encoding to optical matrix...", "info");
+            log("File detected. Encoding to Optical Matrix...", "info");
             await encode(file);
         }
     }
 
-    // --- 5. ENCODE LOGIC (Enhanced: Preview, Size Check) ---
+    // --- ENCODER ---
     async function encode(file) {
         try {
-            loading(10);
-            const fileId = "AURA-" + Date.now().toString(36) + Math.random().toString(36).substr(2, 8); // Longer random for uniqueness
-            log(`Generated Secure ID: ${fileId}`, "success");
-
-            // 1. Read File
-            const buffer = await file.arrayBuffer();
-            const rawData = new Uint8Array(buffer);
-            loading(30);
-
-            // 2. Sync Metadata (Cloud with Fallback)
-            log("Syncing metadata...", "cloud");
+            updateLoader(20);
+            const fileId = "AURA-" + Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
+            
+            // 1. Sync Metadata
             if (db) {
-                await db.collection("aura_registry").doc(fileId).set({
+                db.collection("aura_registry").doc(fileId).set({
                     name: file.name,
                     size: file.size,
                     type: file.type,
-                    date: new Date().toISOString()
-                }).catch(e => log("Metadata sync failed (local mode): " + e.message, "warning"));
+                    created: new Date().toISOString()
+                }).then(() => log("✓ Metadata Synced to Cloud", "cloud"))
+                  .catch(e => log("⚠ Metadata Sync Failed (Local Only)", "warn"));
             }
 
-            // 3. Prepare Payload
-            const separator = ":::AURA_SEP:::"; // Upgraded unique separator
-            const header = new TextEncoder().encode(fileId + separator);
-            
-            // 4. PADDING: Ensure divisible by 3
-            const totalLen = header.length + rawData.length;
+            // 2. Prepare Data
+            const buffer = await file.arrayBuffer();
+            const dataBytes = new Uint8Array(buffer);
+            const separator = ":::SEP:::";
+            const headerStr = fileId + separator;
+            const headerBytes = new TextEncoder().encode(headerStr);
+
+            const totalLen = headerBytes.length + dataBytes.length;
             const padding = (3 - (totalLen % 3)) % 3;
             const finalLen = totalLen + padding;
 
             const finalBuffer = new Uint8Array(finalLen);
-            finalBuffer.set(header, 0);
-            finalBuffer.set(rawData, header.length);
-            // Padding 0s at end
+            finalBuffer.set(headerBytes, 0);
+            finalBuffer.set(dataBytes, headerBytes.length);
 
-            loading(50);
-            log("Rendering advanced optical grid...", "info");
+            updateLoader(50);
 
-            // 5. Grid Size with Limit Check
-            const totalPixels = finalLen / 3;
-            let side = Math.ceil(Math.sqrt(totalPixels));
-            const maxSide = 2048; // Canvas limit
-            if (side > maxSide) {
-                log("⚠ Grid too large. Resizing with warning.", "warning");
-                side = maxSide;
-                showWarning(`Image resized to \( {maxSide}x \){maxSide} (data preserved, extra padding added).`);
-            }
-            
+            // 3. Render to Canvas
+            const numPixels = finalLen / 3;
+            const side = Math.ceil(Math.sqrt(numPixels));
             ui.canvas.width = side;
             ui.canvas.height = side;
-            
+
             const imgData = ui.ctx.createImageData(side, side);
-            const actualPixels = Math.min(totalPixels, side * side);
             
-            // 6. Optimized Pixel Mapping
-            for (let i = 0; i < actualPixels; i++) {
-                const bufIdx = i * 3;
-                const pixIdx = i * 4;
+            for (let i = 0; i < numPixels; i++) {
+                const dataIdx = i * 3;
+                const pixelIdx = i * 4;
                 
-                imgData.data[pixIdx] = finalBuffer[bufIdx];     // R
-                imgData.data[pixIdx + 1] = finalBuffer[bufIdx + 1 || 0]; // G (safe)
-                imgData.data[pixIdx + 2] = finalBuffer[bufIdx + 2 || 0]; // B (safe)
-                imgData.data[pixIdx + 3] = 255; // Opaque
+                imgData.data[pixelIdx] = finalBuffer[dataIdx];     // R
+                imgData.data[pixelIdx+1] = finalBuffer[dataIdx+1]; // G
+                imgData.data[pixelIdx+2] = finalBuffer[dataIdx+2]; // B
+                imgData.data[pixelIdx+3] = 255; // Alpha (Opaque)
             }
 
             ui.ctx.putImageData(imgData, 0, 0);
-            loading(90);
+            updateLoader(90);
 
-            // 7. Preview & Download
-            ui.preview.src = ui.canvas.toDataURL("image/png");
+            // 4. Output
+            const dataUrl = ui.canvas.toDataURL("image/png");
+            ui.preview.src = dataUrl;
             ui.preview.style.display = "block";
-            ui.dlBtn.href = ui.preview.src;
-            ui.dlBtn.download = `AURA_CODE_${file.name}.png`;
+            
+            ui.dlBtn.href = dataUrl;
+            ui.dlBtn.download = `AURA_CODED_${file.name}.png`;
             ui.dlBtn.style.display = "inline-block";
+            ui.dlBtn.innerText = "⬇ DOWNLOAD CODE IMAGE";
             
-            loading(100);
-            log("✅ Encoding Complete! Optical code ready with preview.", "success");
+            updateLoader(100);
+            log(`✓ Successfully Encoded! ID: ${fileId}`, "success");
 
-        } catch (err) {
-            log("✗ Encoding Error: " + err.message, "error");
-            showWarning("Encoding failed. Check console and try again.");
+        } catch (e) {
+            log("✗ Encode Error: " + e.message, "error");
         }
     }
 
-    // --- 6. DECODE LOGIC (Upgraded: Robust Detection, Fallback) ---
-    async function decode(file) {
-        try {
-            loading(20);
-            const img = new Image();
-            const objectURL = URL.createObjectURL(file);
-            img.src = objectURL;
+    // --- DECODER (With Fallback) ---
+    async function tryDecode(file) {
+        updateLoader(10);
+        const img = new Image();
+        const url = URL.createObjectURL(file);
+        
+        img.onload = async () => {
+            URL.revokeObjectURL(url);
+            ui.canvas.width = img.width;
+            ui.canvas.height = img.height;
+            ui.ctx.drawImage(img, 0, 0);
             
-            img.onload = async () => {
-                URL.revokeObjectURL(objectURL); // Clean up
-                ui.canvas.width = img.width;
-                ui.canvas.height = img.height;
-                ui.ctx.drawImage(img, 0, 0);
-                
-                const imgData = ui.ctx.getImageData(0, 0, img.width, img.height);
-                const pixels = imgData.data;
-                
-                // Extract RGB (Ignore Alpha)
-                const totalBytes = (pixels.length / 4) * 3;
-                const buffer = new Uint8Array(totalBytes);
-                
-                for (let i = 0, j = 0; i < pixels.length; i += 4, j += 3) {
-                    buffer[j] = pixels[i];
-                    buffer[j + 1] = pixels[i + 1];
-                    buffer[j + 2] = pixels[i + 2];
-                }
+            const imgData = ui.ctx.getImageData(0, 0, img.width, img.height);
+            const pixels = imgData.data;
+            const buffer = new Uint8Array((pixels.length / 4) * 3);
+            
+            // Extract RGB
+            for (let i = 0, j = 0; i < pixels.length; i += 4, j += 3) {
+                buffer[j] = pixels[i];
+                buffer[j+1] = pixels[i+1];
+                buffer[j+2] = pixels[i+2];
+            }
 
-                loading(50);
-                log("Scanning for AURA signature...", "info");
-
-                // Enhanced Header Detection: Search for unique separator
-                const decoder = new TextDecoder();
-                let fileId = null;
-                const sepBytes = new TextEncoder().encode(":::AURA_SEP:::");
-                const sepLen = sepBytes.length;
+            // Search for Header
+            const decoder = new TextDecoder();
+            // Checking first 100 bytes for signature
+            const headerCheck = decoder.decode(buffer.slice(0, 100)); 
+            const marker = ":::SEP:::";
+            
+            if (headerCheck.includes("AURA-") && headerCheck.includes(marker)) {
+                // --- SUCCESSFUL DECODE ---
+                const parts = headerCheck.split(marker);
+                const fileId = parts[0];
+                const headerLen = new TextEncoder().encode(fileId + marker).length;
                 
-                // Binary search for separator (more robust)
-                for (let start = 0; start < buffer.length - sepLen - 10; start++) { // Min ID length
-                    let match = true;
-                    for (let k = 0; k < sepLen; k++) {
-                        if (buffer[start + k] !== sepBytes[k]) {
-                            match = false;
-                            break;
-                        }
-                    }
-                    if (match) {
-                        const potentialIdBytes = buffer.subarray(0, start);
-                        const potentialId = decoder.decode(potentialIdBytes);
-                        if (potentialId.startsWith("AURA-")) {
-                            fileId = potentialId;
-                            break;
-                        }
-                    }
-                }
+                log(`✓ Signature Found: ${fileId}`, "success");
+                updateLoader(40);
 
-                if (!fileId) {
-                    log("No valid AURA signature detected. Falling back to encode mode.", "warning");
-                    ui.preview.src = URL.createObjectURL(file);
-                    ui.preview.style.display = "block";
-                    loading(100);
-                    return await encode(file); // Fallback
-                }
+                let meta = { name: "recovered_file", type: "application/octet-stream", size: buffer.length - headerLen };
 
-                const headerStr = fileId + ":::AURA_SEP:::";
-                const headerLen = new TextEncoder().encode(headerStr).length;
-
-                log(`✓ AURA Signature Verified: ${fileId}`, "success");
-                loading(60);
-                
-                // Fetch Metadata
-                let meta = null;
                 if (db) {
-                    log("Fetching secure metadata from Cloud...", "cloud");
-                    const doc = await db.collection("aura_registry").doc(fileId).get();
-                    if (doc.exists) {
-                        meta = doc.data();
-                        log(`Recovering: \( {meta.name} ( \){(meta.size / 1024).toFixed(1)} KB)`, "info");
-                    } else {
-                        log("Metadata expired or missing. Using local extraction.", "warning");
-                    }
+                    log("Fetching Metadata from Cloud...", "cloud");
+                    try {
+                        const doc = await db.collection("aura_registry").doc(fileId).get();
+                        if (doc.exists) meta = doc.data();
+                    } catch(e) { log("Metadata fetch failed, using raw data", "warn"); }
                 }
 
-                // Fallback: If no meta, estimate size (but warn)
-                if (!meta) {
-                    meta = {
-                        name: "recovered_file",
-                        size: buffer.length - headerLen, // Approximate
-                        type: "application/octet-stream"
-                    };
-                    log("⚠ Using approximate recovery (no cloud sync).", "warning");
-                    showWarning("Metadata unavailable. File may have trailing artifacts.");
-                }
+                const fileData = buffer.slice(headerLen, headerLen + meta.size);
+                const blob = new Blob([fileData], { type: meta.type });
+                const blobUrl = URL.createObjectURL(blob);
 
-                // Extract Data (Precise Trim)
-                const fileData = buffer.subarray(headerLen, Math.min(headerLen + meta.size, buffer.length));
-                
-                loading(100);
-                // Show preview of source image
-                ui.preview.src = URL.createObjectURL(file);
+                ui.preview.src = URL.createObjectURL(file); // Show original image
                 ui.preview.style.display = "block";
-                downloadRecovered(fileData, meta.name, meta.type);
-            };
 
-            img.onerror = () => {
-                URL.revokeObjectURL(objectURL);
-                log("Invalid image format. Treating as file to encode.", "warning");
-                encode(file);
-            };
+                ui.dlBtn.href = blobUrl;
+                ui.dlBtn.download = meta.name; // Restore original name
+                ui.dlBtn.style.display = "inline-block";
+                ui.dlBtn.innerText = `⬇ RECOVER: ${meta.name}`;
+                
+                updateLoader(100);
+                log("✓ File Restored Successfully!", "success");
 
-        } catch (err) {
-            log("✗ Decode Error: " + err.message, "error");
-            showWarning("Decode failed. Attempting encode fallback.");
+            } else {
+                // --- FALLBACK TO ENCODE ---
+                log("⚠ No AURA Signature found. Switching to ENCODE mode.", "warn");
+                await encode(file);
+            }
+        };
+
+        img.onerror = () => {
+            log("Invalid Image. Switching to ENCODE mode.", "warn");
             encode(file);
-        }
+        };
+        img.src = url;
     }
 
-    // --- 7. UTILITIES (Polished) ---
-    function downloadRecovered(data, name, type) {
-        const blob = new Blob([data], { type: type });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `RECOVERED_${name}`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url); // Clean up
-        log("✅ File Recovered & Downloaded Successfully!", "success");
-    }
-
-    function log(msg, type = "info") {
+    // --- UTILS ---
+    function log(msg, type) {
         const div = document.createElement('div');
         div.className = `log-entry log-${type}`;
-        div.innerText = `[${new Date().toLocaleTimeString()}] > ${msg}`;
+        div.innerText = `> ${msg}`;
         ui.console.appendChild(div);
         ui.console.scrollTop = ui.console.scrollHeight;
     }
 
-    function loading(pct) {
-        ui.loader.style.display = 'block';
-        ui.loaderBar.style.width = pct + "%";
-        if (pct >= 100) {
-            setTimeout(() => {
-                ui.loader.style.display = 'none';
-                ui.loaderBar.style.width = '0%';
-            }, 2000);
-        }
+    function updateLoader(percent) {
+        ui.loader.style.width = percent + "%";
     }
 
-    function clearUI() {
+    function resetUI() {
         ui.dlBtn.style.display = 'none';
         ui.preview.style.display = 'none';
-        ui.preview.src = '';
-        ui.warning.style.display = 'none';
-        // Optional: Clear console? Uncomment if desired
-        // ui.console.innerHTML = '<div class="log-entry log-info">> New Session Started...</div>';
+        ui.loader.style.width = '0%';
+        ui.console.innerHTML = '<div class="log-entry log-info">> Ready...</div>';
     }
-
-    function showWarning(msg) {
-        ui.warning.textContent = msg;
-        ui.warning.style.display = 'block';
-        setTimeout(() => ui.warning.style.display = 'none', 5000);
-    }
-
 </script>
+
 </body>
 </html>
