@@ -570,4 +570,92 @@
                         meta = doc.data();
                         log(`Recovering: \( {meta.name} ( \){(meta.size / 1024).toFixed(1)} KB)`, "info");
                     } else {
- 
+                        log("Metadata expired or missing. Using local extraction.", "warning");
+                    }
+                }
+
+                // Fallback: If no meta, estimate size (but warn)
+                if (!meta) {
+                    meta = {
+                        name: "recovered_file",
+                        size: buffer.length - headerLen, // Approximate
+                        type: "application/octet-stream"
+                    };
+                    log("⚠ Using approximate recovery (no cloud sync).", "warning");
+                    showWarning("Metadata unavailable. File may have trailing artifacts.");
+                }
+
+                // Extract Data (Precise Trim)
+                const fileData = buffer.subarray(headerLen, Math.min(headerLen + meta.size, buffer.length));
+                
+                loading(100);
+                // Show preview of source image
+                ui.preview.src = URL.createObjectURL(file);
+                ui.preview.style.display = "block";
+                downloadRecovered(fileData, meta.name, meta.type);
+            };
+
+            img.onerror = () => {
+                URL.revokeObjectURL(objectURL);
+                log("Invalid image format. Treating as file to encode.", "warning");
+                encode(file);
+            };
+
+        } catch (err) {
+            log("✗ Decode Error: " + err.message, "error");
+            showWarning("Decode failed. Attempting encode fallback.");
+            encode(file);
+        }
+    }
+
+    // --- 7. UTILITIES (Polished) ---
+    function downloadRecovered(data, name, type) {
+        const blob = new Blob([data], { type: type });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `RECOVERED_${name}`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url); // Clean up
+        log("✅ File Recovered & Downloaded Successfully!", "success");
+    }
+
+    function log(msg, type = "info") {
+        const div = document.createElement('div');
+        div.className = `log-entry log-${type}`;
+        div.innerText = `[${new Date().toLocaleTimeString()}] > ${msg}`;
+        ui.console.appendChild(div);
+        ui.console.scrollTop = ui.console.scrollHeight;
+    }
+
+    function loading(pct) {
+        ui.loader.style.display = 'block';
+        ui.loaderBar.style.width = pct + "%";
+        if (pct >= 100) {
+            setTimeout(() => {
+                ui.loader.style.display = 'none';
+                ui.loaderBar.style.width = '0%';
+            }, 2000);
+        }
+    }
+
+    function clearUI() {
+        ui.dlBtn.style.display = 'none';
+        ui.preview.style.display = 'none';
+        ui.preview.src = '';
+        ui.warning.style.display = 'none';
+        // Optional: Clear console? Uncomment if desired
+        // ui.console.innerHTML = '<div class="log-entry log-info">> New Session Started...</div>';
+    }
+
+    function showWarning(msg) {
+        ui.warning.textContent = msg;
+        ui.warning.style.display = 'block';
+        setTimeout(() => ui.warning.style.display = 'none', 5000);
+    }
+
+</script>
+</body>
+</html>
