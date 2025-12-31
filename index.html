@@ -3,470 +3,465 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AURA v4.0 | Advanced Hybrid Optical Engine</title>
+    <title>AURA v5.0 | QUANTUM GOD MODE</title>
     
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
     <style>
         :root {
-            --primary: #00f3ff;
-            --secondary: #bc13fe;
-            --bg: #050505;
-            --panel: #0f1115;
-            --text: #e0e0e0;
-            --border: #333;
-            --accent: #ff6b35;
+            --neon-blue: #00f3ff;
+            --neon-purple: #bc13fe;
+            --neon-red: #ff0055;
+            --bg-dark: #020205;
+            --glass: rgba(20, 20, 25, 0.85);
         }
 
         body {
-            background-color: var(--bg);
-            color: var(--text);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-dark);
+            background-image: 
+                radial-gradient(circle at 50% 50%, rgba(188, 19, 254, 0.1) 0%, transparent 50%),
+                linear-gradient(0deg, rgba(0,0,0,1) 0%, rgba(10,10,15,1) 100%);
+            color: #fff;
+            font-family: 'Segoe UI', monospace;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             margin: 0;
-            overflow-x: hidden;
-        }
-
-        /* Glassmorphism Container */
-        .container {
-            width: 90%;
-            max-width: 900px;
-            background: rgba(15, 17, 21, 0.95);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 2.5rem;
-            box-shadow: 0 0 60px rgba(0, 243, 255, 0.08);
-            text-align: center;
-            position: relative;
-            backdrop-filter: blur(10px);
-        }
-
-        /* Glowing Border Animation */
-        .container::before {
-            content: '';
-            position: absolute;
-            top: -2px; left: -2px; right: -2px; bottom: -2px;
-            background: linear-gradient(45deg, var(--primary), var(--secondary), var(--bg));
-            z-index: -1;
-            border-radius: 22px;
-            opacity: 0.3;
-            animation: borderGlow 6s linear infinite;
-        }
-
-        @keyframes borderGlow {
-            0% { filter: hue-rotate(0deg); }
-            100% { filter: hue-rotate(360deg); }
-        }
-
-        h1 {
-            margin: 0;
-            font-weight: 300;
-            letter-spacing: 5px;
-            background: linear-gradient(90deg, var(--primary), #fff, var(--secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-size: 2.5rem;
-            text-transform: uppercase;
-        }
-
-        .badge {
-            background: var(--secondary);
-            color: #fff;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 0.6rem;
-            vertical-align: super;
-            letter-spacing: 1px;
-        }
-
-        .subtitle {
-            color: #666;
-            font-size: 0.9rem;
-            margin-bottom: 2rem;
-            letter-spacing: 2px;
-        }
-
-        /* Advanced Drop Zone */
-        .drop-zone {
-            border: 2px dashed #333;
-            border-radius: 16px;
-            padding: 60px 20px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            background: rgba(255, 255, 255, 0.01);
-            position: relative;
             overflow: hidden;
         }
 
-        .drop-zone:hover, .drop-zone.dragover {
-            border-color: var(--primary);
-            background: rgba(0, 243, 255, 0.05);
-            box-shadow: inset 0 0 20px rgba(0, 243, 255, 0.1);
-        }
-
-        .drop-zone p {
-            color: #888;
-            font-size: 1.1rem;
-            margin: 10px 0 0;
-        }
-
-        .icon { font-size: 3rem; opacity: 0.8; }
-
-        /* Preview Image */
-        #preview {
-            max-width: 100%;
-            max-height: 350px;
+        /* HUD Container */
+        .hud-container {
+            width: 95%;
+            max-width: 1000px;
+            background: var(--glass);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 12px;
-            margin-top: 25px;
-            display: none;
-            border: 1px solid var(--border);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            padding: 2rem;
+            position: relative;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 0 80px rgba(0, 0, 0, 0.8);
+            overflow: hidden;
         }
 
-        /* Terminal Console */
-        .console {
-            margin-top: 25px;
-            background: #000;
-            border: 1px solid #222;
-            border-radius: 8px;
+        /* Scanning Line Animation */
+        .hud-container::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 5px;
+            background: linear-gradient(90deg, transparent, var(--neon-blue), var(--neon-purple), transparent);
+            animation: scan 4s linear infinite;
+            opacity: 0.5;
+        }
+        @keyframes scan { 0% { top: 0; } 100% { top: 100%; } }
+
+        /* Typography */
+        h1 {
+            font-size: 3rem;
+            margin: 0;
+            letter-spacing: 8px;
+            background: linear-gradient(90deg, #fff, var(--neon-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(0, 243, 255, 0.5);
+        }
+
+        .status-badge {
+            font-size: 0.8rem;
+            border: 1px solid var(--neon-red);
+            color: var(--neon-red);
+            padding: 2px 8px;
+            border-radius: 4px;
+            vertical-align: middle;
+            margin-left: 10px;
+            box-shadow: 0 0 10px var(--neon-red);
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .stat-box {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #333;
+            padding: 10px;
+            border-radius: 6px;
+        }
+        .stat-label { font-size: 0.7rem; color: #666; text-transform: uppercase; }
+        .stat-val { font-size: 1.2rem; font-weight: bold; color: var(--neon-blue); }
+
+        /* Drop Zone */
+        .drop-target {
+            border: 2px dashed #444;
+            height: 150px;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: 0.3s;
+            background: rgba(255,255,255,0.02);
+        }
+        .drop-target:hover { border-color: var(--neon-purple); background: rgba(188, 19, 254, 0.05); }
+
+        /* Preview Area */
+        .preview-stage {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
             height: 200px;
-            overflow-y: auto;
-            text-align: left;
+        }
+        
+        #previewImg {
+            flex: 1;
+            object-fit: contain;
+            border: 1px solid #333;
+            border-radius: 8px;
+            background: #000;
+            display: none;
+        }
+
+        .terminal {
+            flex: 1;
+            background: #000;
+            border: 1px solid #333;
             padding: 15px;
             font-family: 'Courier New', monospace;
-            font-size: 0.85rem;
-            box-shadow: inset 0 0 10px #000;
+            font-size: 0.8rem;
+            color: #ccc;
+            overflow-y: auto;
+            border-radius: 8px;
         }
+        .log-line { margin-bottom: 4px; border-left: 2px solid transparent; padding-left: 8px; }
+        .log-sys { border-color: var(--neon-blue); color: var(--neon-blue); }
+        .log-err { border-color: var(--neon-red); color: var(--neon-red); }
+        .log-ok { border-color: #0f0; color: #0f0; }
 
-        .log-entry { margin-bottom: 5px; padding-left: 10px; border-left: 2px solid #333; }
-        .log-info { color: #888; border-color: #888; }
-        .log-success { color: var(--primary); border-color: var(--primary); }
-        .log-error { color: var(--accent); border-color: var(--accent); }
-        .log-cloud { color: var(--secondary); border-color: var(--secondary); }
-        .log-warn { color: #ffcc00; border-color: #ffcc00; }
-
-        /* Controls */
-        .btn-group { margin-top: 25px; display: flex; gap: 15px; justify-content: center; }
-        
-        .btn {
-            padding: 12px 30px;
-            border: none;
-            border-radius: 6px;
-            font-weight: 600;
-            cursor: pointer;
-            text-decoration: none;
-            font-size: 0.9rem;
-            transition: 0.3s;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            display: none; /* Hidden by default */
-        }
-
-        .btn-download {
-            background: var(--primary);
-            color: #000;
-            box-shadow: 0 0 15px rgba(0, 243, 255, 0.3);
-        }
-        .btn-download:hover { background: #fff; box-shadow: 0 0 25px rgba(0, 243, 255, 0.6); }
-
-        .btn-reset {
+        /* Progress Bar */
+        .progress-container {
+            height: 6px;
             background: #222;
-            color: #fff;
-            display: inline-block;
+            margin: 20px 0;
+            border-radius: 3px;
+            overflow: hidden;
+            position: relative;
         }
-        .btn-reset:hover { background: #333; }
-
-        /* Loader */
-        .loader {
-            height: 3px;
+        .progress-bar {
+            height: 100%;
             width: 0%;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-            margin-top: 20px;
-            transition: width 0.2s;
-            box-shadow: 0 0 10px var(--primary);
+            background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple), var(--neon-red));
+            transition: width 0.1s;
+            box-shadow: 0 0 15px var(--neon-purple);
         }
+
+        .btn-main {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(90deg, #111, #222);
+            border: 1px solid #444;
+            color: #fff;
+            font-size: 1rem;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: 0.3s;
+            display: none;
+        }
+        .btn-main:hover { border-color: var(--neon-blue); color: var(--neon-blue); }
 
         canvas { display: none; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1>AURA <span class="badge">v4.0</span></h1>
-    <p class="subtitle">Secure Optical Data Matrix & Cloud Sync</p>
+<div class="hud-container">
+    <div style="display:flex; justify-content: space-between; align-items: center;">
+        <h1>AURA <span style="font-size:1rem; color:#666;">v5.0</span></h1>
+        <span class="status-badge">QUANTUM CORE ACTIVE</span>
+    </div>
 
-    <div class="drop-zone" id="dropZone">
-        <div class="icon">📂</div>
-        <p>Drag & Drop any File<br><span style="font-size:0.8rem; opacity:0.6;">(Images will be auto-scanned. If no code found, they will be encoded)</span></p>
+    <div class="stats-grid">
+        <div class="stat-box">
+            <div class="stat-label">Memory Allocation</div>
+            <div class="stat-val" id="statMem">0 MB</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-label">Core Status</div>
+            <div class="stat-val" id="statCore">IDLE</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-label">Data Capacity</div>
+            <div class="stat-val">ULTRA MAX</div>
+        </div>
+    </div>
+
+    <div class="drop-target" id="dropZone">
+        <div style="font-size: 2rem;">⚡ DROP FILE ⚡</div>
+        <div style="color: #666; margin-top:5px;">Supports Large Files (50MB+) via Multithreading</div>
         <input type="file" id="fileInput" hidden>
     </div>
 
-    <div class="loader" id="loader"></div>
-    
-    <img id="preview" alt="Preview">
-
-    <div class="console" id="consoleLog">
-        <div class="log-entry log-info">> System Initialized. Waiting for input...</div>
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
     </div>
 
-    <div class="btn-group">
-        <a id="downloadBtn" class="btn btn-download">⬇ DOWNLOAD RESULT</a>
-        <button class="btn btn-reset" onclick="location.reload()">↻ RESET</button>
+    <div class="preview-stage">
+        <img id="previewImg">
+        <div class="terminal" id="terminal">
+            <div class="log-line log-sys">> AURA v5.0 Initialized...</div>
+            <div class="log-line log-sys">> Web Workers: Ready</div>
+            <div class="log-line log-sys">> Max Canvas Buffer: 8192x8192</div>
+        </div>
     </div>
 
-    <canvas id="processor"></canvas>
+    <a id="downloadBtn" class="btn-main" style="text-align:center; text-decoration:none; line-height:20px;">DOWNLOAD PAYLOAD</a>
+    <button class="btn-main" onclick="location.reload()" style="margin-top:10px;">RESET SYSTEM</button>
 </div>
 
-<script>
-    /**
-     * AURA v4.0 - Hybrid Optical Engine
-     * Upgrades: Auto-Detection Fallback, Alpha Channel Fix, Size Limit, Improved UI
-     */
-
-    // --- CONFIGURATION ---
-    const firebaseConfig = {
-        apiKey: "AIzaSyD60VG7aqXr-3TFKBdQRT8XbaEl54J3f8s",
-        authDomain: "experiment-26a5c.firebaseapp.com",
-        projectId: "experiment-26a5c",
-        storageBucket: "experiment-26a5c.firebasestorage.app",
-        messagingSenderId: "791493232373",
-        appId: "1:791493232373:web:f1fb821e86752ea7a4a7bc"
-    };
-
-    // --- INIT ---
-    let db;
-    try {
-        firebase.initializeApp(firebaseConfig);
-        db = firebase.firestore();
-        log("✓ Cloud Sync: Online (Firebase Connected)", "cloud");
-    } catch (e) {
-        log("⚠ Cloud Sync: Offline (Local Mode Only)", "warn");
-        db = null;
-    }
-
-    const ui = {
-        dropZone: document.getElementById('dropZone'),
-        fileInput: document.getElementById('fileInput'),
-        console: document.getElementById('consoleLog'),
-        canvas: document.getElementById('processor'),
-        ctx: document.getElementById('processor').getContext('2d', { willReadFrequently: true }),
-        dlBtn: document.getElementById('downloadBtn'),
-        loader: document.getElementById('loader'),
-        preview: document.getElementById('preview')
-    };
-
-    // --- EVENT LISTENERS ---
-    ui.dropZone.onclick = () => ui.fileInput.click();
-    ui.fileInput.onchange = (e) => handleFile(e.target.files[0]);
-    
-    ui.dropZone.ondragover = (e) => {
-        e.preventDefault();
-        ui.dropZone.classList.add('dragover');
-    };
-    ui.dropZone.ondragleave = () => ui.dropZone.classList.remove('dragover');
-    ui.dropZone.ondrop = (e) => {
-        e.preventDefault();
-        ui.dropZone.classList.remove('dragover');
-        handleFile(e.dataTransfer.files[0]);
-    };
-
-    // --- MAIN LOGIC ---
-    async function handleFile(file) {
-        if (!file) return;
-        resetUI();
-
-        // Size Check (5MB Limit for browser safety)
-        if (file.size > 5 * 1024 * 1024) {
-            log("⚠ Error: File too large (>5MB). Browser may freeze.", "error");
-            return;
-        }
-
-        log(`Processing: ${file.name} (${(file.size/1024).toFixed(1)} KB)`, "info");
-
-        // Smart Detection
-        if (file.type.startsWith("image/")) {
-            log("Image detected. Attempting to decode...", "info");
-            await tryDecode(file);
-        } else {
-            log("File detected. Encoding to Optical Matrix...", "info");
-            await encode(file);
-        }
-    }
-
-    // --- ENCODER ---
-    async function encode(file) {
-        try {
-            updateLoader(20);
-            const fileId = "AURA-" + Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
-            
-            // 1. Sync Metadata
-            if (db) {
-                db.collection("aura_registry").doc(fileId).set({
-                    name: file.name,
-                    size: file.size,
-                    type: file.type,
-                    created: new Date().toISOString()
-                }).then(() => log("✓ Metadata Synced to Cloud", "cloud"))
-                  .catch(e => log("⚠ Metadata Sync Failed (Local Only)", "warn"));
-            }
-
-            // 2. Prepare Data
-            const buffer = await file.arrayBuffer();
-            const dataBytes = new Uint8Array(buffer);
-            const separator = ":::SEP:::";
-            const headerStr = fileId + separator;
-            const headerBytes = new TextEncoder().encode(headerStr);
-
-            const totalLen = headerBytes.length + dataBytes.length;
-            const padding = (3 - (totalLen % 3)) % 3;
-            const finalLen = totalLen + padding;
-
-            const finalBuffer = new Uint8Array(finalLen);
-            finalBuffer.set(headerBytes, 0);
-            finalBuffer.set(dataBytes, headerBytes.length);
-
-            updateLoader(50);
-
-            // 3. Render to Canvas
-            const numPixels = finalLen / 3;
-            const side = Math.ceil(Math.sqrt(numPixels));
-            ui.canvas.width = side;
-            ui.canvas.height = side;
-
-            const imgData = ui.ctx.createImageData(side, side);
-            
-            for (let i = 0; i < numPixels; i++) {
-                const dataIdx = i * 3;
-                const pixelIdx = i * 4;
-                
-                imgData.data[pixelIdx] = finalBuffer[dataIdx];     // R
-                imgData.data[pixelIdx+1] = finalBuffer[dataIdx+1]; // G
-                imgData.data[pixelIdx+2] = finalBuffer[dataIdx+2]; // B
-                imgData.data[pixelIdx+3] = 255; // Alpha (Opaque)
-            }
-
-            ui.ctx.putImageData(imgData, 0, 0);
-            updateLoader(90);
-
-            // 4. Output
-            const dataUrl = ui.canvas.toDataURL("image/png");
-            ui.preview.src = dataUrl;
-            ui.preview.style.display = "block";
-            
-            ui.dlBtn.href = dataUrl;
-            ui.dlBtn.download = `AURA_CODED_${file.name}.png`;
-            ui.dlBtn.style.display = "inline-block";
-            ui.dlBtn.innerText = "⬇ DOWNLOAD CODE IMAGE";
-            
-            updateLoader(100);
-            log(`✓ Successfully Encoded! ID: ${fileId}`, "success");
-
-        } catch (e) {
-            log("✗ Encode Error: " + e.message, "error");
-        }
-    }
-
-    // --- DECODER (With Fallback) ---
-    async function tryDecode(file) {
-        updateLoader(10);
-        const img = new Image();
-        const url = URL.createObjectURL(file);
+<script id="worker-script" type="javascript/worker">
+    self.onmessage = function(e) {
+        const { type, fileData, fileName, action, fileType } = e.data;
         
-        img.onload = async () => {
-            URL.revokeObjectURL(url);
-            ui.canvas.width = img.width;
-            ui.canvas.height = img.height;
-            ui.ctx.drawImage(img, 0, 0);
-            
-            const imgData = ui.ctx.getImageData(0, 0, img.width, img.height);
-            const pixels = imgData.data;
-            const buffer = new Uint8Array((pixels.length / 4) * 3);
-            
-            // Extract RGB
-            for (let i = 0, j = 0; i < pixels.length; i += 4, j += 3) {
-                buffer[j] = pixels[i];
-                buffer[j+1] = pixels[i+1];
-                buffer[j+2] = pixels[i+2];
-            }
-
-            // Search for Header
-            const decoder = new TextDecoder();
-            // Checking first 100 bytes for signature
-            const headerCheck = decoder.decode(buffer.slice(0, 100)); 
-            const marker = ":::SEP:::";
-            
-            if (headerCheck.includes("AURA-") && headerCheck.includes(marker)) {
-                // --- SUCCESSFUL DECODE ---
-                const parts = headerCheck.split(marker);
-                const fileId = parts[0];
-                const headerLen = new TextEncoder().encode(fileId + marker).length;
+        if (action === 'encode') {
+            try {
+                // 1. Generate Header
+                const fileId = "AURA5-" + Date.now().toString(36);
+                const headerStr = fileId + ":::SEP:::" + encodeURIComponent(fileName) + ":::SEP:::" + fileType + ":::SEP:::";
+                const headerBytes = new TextEncoder().encode(headerStr);
                 
-                log(`✓ Signature Found: ${fileId}`, "success");
-                updateLoader(40);
-
-                let meta = { name: "recovered_file", type: "application/octet-stream", size: buffer.length - headerLen };
-
-                if (db) {
-                    log("Fetching Metadata from Cloud...", "cloud");
-                    try {
-                        const doc = await db.collection("aura_registry").doc(fileId).get();
-                        if (doc.exists) meta = doc.data();
-                    } catch(e) { log("Metadata fetch failed, using raw data", "warn"); }
+                // 2. Prepare Buffer
+                const totalLen = headerBytes.length + fileData.byteLength;
+                const padding = (3 - (totalLen % 3)) % 3;
+                
+                const finalBuffer = new Uint8Array(totalLen + padding);
+                finalBuffer.set(headerBytes, 0);
+                finalBuffer.set(new Uint8Array(fileData), headerBytes.length);
+                
+                // 3. Calculate Dimensions
+                const totalPixels = finalBuffer.length / 3;
+                const side = Math.ceil(Math.sqrt(totalPixels));
+                
+                // 4. Create Pixel Array (RGBA)
+                // We use 255 for Alpha to keep it visible
+                const imgBuffer = new Uint8ClampedArray(side * side * 4);
+                
+                for(let i=0; i < totalPixels; i++) {
+                    const bufIdx = i * 3;
+                    const pixIdx = i * 4;
+                    
+                    imgBuffer[pixIdx] = finalBuffer[bufIdx];         // R
+                    imgBuffer[pixIdx+1] = finalBuffer[bufIdx+1] || 0; // G
+                    imgBuffer[pixIdx+2] = finalBuffer[bufIdx+2] || 0; // B
+                    imgBuffer[pixIdx+3] = 255;                       // A
+                    
+                    if(i % 50000 === 0) {
+                        self.postMessage({ type: 'progress', val: (i/totalPixels)*100 });
+                    }
                 }
-
-                const fileData = buffer.slice(headerLen, headerLen + meta.size);
-                const blob = new Blob([fileData], { type: meta.type });
-                const blobUrl = URL.createObjectURL(blob);
-
-                ui.preview.src = URL.createObjectURL(file); // Show original image
-                ui.preview.style.display = "block";
-
-                ui.dlBtn.href = blobUrl;
-                ui.dlBtn.download = meta.name; // Restore original name
-                ui.dlBtn.style.display = "inline-block";
-                ui.dlBtn.innerText = `⬇ RECOVER: ${meta.name}`;
                 
-                updateLoader(100);
-                log("✓ File Restored Successfully!", "success");
+                self.postMessage({ 
+                    type: 'complete', 
+                    width: side, 
+                    height: side, 
+                    buffer: imgBuffer,
+                    fileId: fileId
+                }, [imgBuffer.buffer]); // Transferable object for speed
 
-            } else {
-                // --- FALLBACK TO ENCODE ---
-                log("⚠ No AURA Signature found. Switching to ENCODE mode.", "warn");
-                await encode(file);
+            } catch(err) {
+                self.postMessage({ type: 'error', msg: err.message });
             }
-        };
-
-        img.onerror = () => {
-            log("Invalid Image. Switching to ENCODE mode.", "warn");
-            encode(file);
-        };
-        img.src = url;
-    }
-
-    // --- UTILS ---
-    function log(msg, type) {
-        const div = document.createElement('div');
-        div.className = `log-entry log-${type}`;
-        div.innerText = `> ${msg}`;
-        ui.console.appendChild(div);
-        ui.console.scrollTop = ui.console.scrollHeight;
-    }
-
-    function updateLoader(percent) {
-        ui.loader.style.width = percent + "%";
-    }
-
-    function resetUI() {
-        ui.dlBtn.style.display = 'none';
-        ui.preview.style.display = 'none';
-        ui.loader.style.width = '0%';
-        ui.console.innerHTML = '<div class="log-entry log-info">> Ready...</div>';
-    }
+        } 
+        
+        else if (action === 'decode') {
+            try {
+                const pixels = new Uint8Array(fileData); // RGBA data
+                const totalBytes = (pixels.length / 4) * 3;
+                const rawData = new Uint8Array(totalBytes);
+                
+                for(let i=0, j=0; i < pixels.length; i+=4, j+=3) {
+                    rawData[j] = pixels[i];
+                    rawData[j+1] = pixels[i+1];
+                    rawData[j+2] = pixels[i+2];
+                    
+                    if(i % 100000 === 0) {
+                        self.postMessage({ type: 'progress', val: (i/pixels.length)*100 });
+                    }
+                }
+                
+                // Parse Header
+                const decoder = new TextDecoder();
+                const sample = decoder.decode(rawData.slice(0, 500));
+                const marker = ":::SEP:::";
+                
+                if(sample.includes("AURA") && sample.includes(marker)) {
+                    const parts = sample.split(marker);
+                    // parts[0] = ID, parts[1] = Name, parts[2] = Type
+                    const headerStr = parts[0] + marker + parts[1] + marker + parts[2] + marker;
+                    const headerLen = new TextEncoder().encode(headerStr).length;
+                    
+                    const actualData = rawData.slice(headerLen);
+                    
+                    self.postMessage({
+                        type: 'decoded',
+                        fileData: actualData,
+                        fileName: decodeURIComponent(parts[1]),
+                        fileType: parts[2]
+                    }, [actualData.buffer]);
+                } else {
+                    throw new Error("Invalid AURA Signature");
+                }
+                
+            } catch(err) {
+                self.postMessage({ type: 'error', msg: err.message });
+            }
+        }
+    };
 </script>
 
+<script>
+    // --- SYSTEM INIT ---
+    const ui = {
+        drop: document.getElementById('dropZone'),
+        input: document.getElementById('fileInput'),
+        term: document.getElementById('terminal'),
+        bar: document.getElementById('progressBar'),
+        statMem: document.getElementById('statMem'),
+        statCore: document.getElementById('statCore'),
+        preview: document.getElementById('previewImg'),
+        btn: document.getElementById('downloadBtn'),
+        reset: document.querySelector('button[onclick]')
+    };
+
+    // --- WORKER SETUP ---
+    const blob = new Blob([document.getElementById('worker-script').textContent], {type: "text/javascript"});
+    const worker = new Worker(window.URL.createObjectURL(blob));
+
+    // --- EVENT LISTENERS ---
+    ui.drop.onclick = () => ui.input.click();
+    ui.input.onchange = (e) => processInput(e.target.files[0]);
+    
+    ui.drop.ondragover = (e) => { e.preventDefault(); ui.drop.style.borderColor = '#00f3ff'; };
+    ui.drop.ondragleave = () => { ui.drop.style.borderColor = '#444'; };
+    ui.drop.ondrop = (e) => { e.preventDefault(); processInput(e.dataTransfer.files[0]); };
+
+    // --- MAIN PROCESSOR ---
+    function processInput(file) {
+        if(!file) return;
+        ui.reset.style.display = 'block';
+        ui.btn.style.display = 'none';
+        ui.preview.style.display = 'none';
+        
+        log(`> Analyzing Input: ${file.name}`, 'sys');
+        log(`> Size: ${(file.size/(1024*1024)).toFixed(2)} MB`, 'sys');
+        
+        ui.statMem.innerText = (file.size/(1024*1024)).toFixed(1) + " MB";
+        ui.statCore.innerText = "PROCESSING";
+        ui.statCore.style.color = "#00f3ff";
+
+        if(file.type.startsWith('image/')) {
+            // Decode Path
+            log('> Image detected. Decoding Matrix...', 'sys');
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = new Image();
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0);
+                    const imgData = ctx.getImageData(0,0, img.width, img.height);
+                    
+                    worker.postMessage({
+                        action: 'decode',
+                        fileData: imgData.data.buffer 
+                    }, [imgData.data.buffer]);
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        } else {
+            // Encode Path
+            log('> File detected. Initiating Quantum Encode...', 'sys');
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                worker.postMessage({
+                    action: 'encode',
+                    fileData: e.target.result,
+                    fileName: file.name,
+                    fileType: file.type
+                }, [e.target.result]); // Zero-copy transfer
+            };
+            reader.readAsArrayBuffer(file);
+        }
+    }
+
+    // --- WORKER RESPONSE HANDLER ---
+    worker.onmessage = (e) => {
+        const { type, val, msg, width, height, buffer, fileId, fileData, fileName, fileType } = e.data;
+
+        if(type === 'progress') {
+            ui.bar.style.width = val + '%';
+        }
+
+        if(type === 'error') {
+            log(`> FATAL ERROR: ${msg}`, 'err');
+            ui.statCore.innerText = "FAILED";
+            ui.statCore.style.color = "#ff0055";
+        }
+
+        if(type === 'complete') { // Encode Success
+            log('> Encoding Complete. Generating Visual...', 'ok');
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            const imgData = new ImageData(new Uint8ClampedArray(buffer), width, height);
+            ctx.putImageData(imgData, 0, 0);
+            
+            const url = canvas.toDataURL('image/png');
+            ui.preview.src = url;
+            ui.preview.style.display = 'block';
+            
+            ui.btn.href = url;
+            ui.btn.download = `AURA_QUANTUM_${fileId}.png`;
+            ui.btn.innerText = "⬇ DOWNLOAD OPTICAL MATRIX";
+            ui.btn.style.display = 'block';
+            
+            ui.statCore.innerText = "IDLE";
+            ui.statCore.style.color = "#fff";
+            log(`> Matrix Generated: ${width}x${height}px`, 'ok');
+        }
+
+        if(type === 'decoded') { // Decode Success
+            log('> Pattern Decoded Successfully.', 'ok');
+            const blob = new Blob([fileData], {type: fileType});
+            const url = URL.createObjectURL(blob);
+            
+            ui.btn.href = url;
+            ui.btn.download = fileName;
+            ui.btn.innerText = `⬇ EXTRACT: ${fileName}`;
+            ui.btn.style.display = 'block';
+            
+            ui.statCore.innerText = "IDLE";
+            ui.statCore.style.color = "#fff";
+            log(`> Ready to Extract: ${fileName}`, 'ok');
+        }
+    };
+
+    function log(msg, type) {
+        const div = document.createElement('div');
+        div.className = `log-line log-${type}`;
+        div.innerText = msg;
+        ui.term.appendChild(div);
+        ui.term.scrollTop = ui.term.scrollHeight;
+    }
+</script>
 </body>
 </html>
